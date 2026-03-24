@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Lecture Notes Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- Ambient background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="app-shell">
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <div class="header-badge">NLP · TF-IDF · KMeans</div>
+      <h1 class="site-title">
+        <span class="title-accent">Smart</span> Lecture Notes
+        <br/>Generator
+      </h1>
+      <p class="site-subtitle">
+        Paste your lecture text or upload a <code>.txt</code> file — get structured notes,
+        keywords, and topic clusters in seconds.
+      </p>
+    </header>
+
+    <!-- ── Input Panel ── -->
+    <section class="input-panel">
+
+      <div class="input-group">
+        <label class="field-label" for="lectureText">
+          <span class="label-icon">✍</span> Lecture Text
+        </label>
+        <textarea
+          id="lectureText"
+          class="text-input"
+          placeholder="Paste your lecture content here…&#10;&#10;Example: Machine learning is a subset of artificial intelligence that enables systems to learn from data and improve without being explicitly programmed..."
+          rows="10"
+        ></textarea>
+        <div class="char-counter"><span id="wordCount">0</span> words</div>
+      </div>
+
+      <div class="divider-row">
+        <span class="divider-line"></span>
+        <span class="divider-label">or upload a file</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".txt" hidden />
+        <div class="upload-icon">📄</div>
+        <p class="upload-text">Drop a <strong>.txt</strong> file here or <button class="upload-link" id="browseBtn">browse</button></p>
+        <p class="upload-hint" id="fileNameDisplay">No file selected</p>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-generate" id="generateBtn">
+          <span class="btn-text">Generate Notes</span>
+          <span class="btn-icon">→</span>
+        </button>
+        <button class="btn-clear" id="clearBtn">Clear</button>
+      </div>
+
+      <div id="errorBanner" class="error-banner hidden"></div>
+    </section>
+
+    <!-- ── Loading Spinner ── -->
+    <div id="loadingState" class="loading-state hidden">
+      <div class="spinner-ring"></div>
+      <p class="loading-text">Analyzing lecture content…</p>
+      <div class="loading-steps">
+        <span class="step active" id="step1">Tokenizing</span>
+        <span class="step-arrow">›</span>
+        <span class="step" id="step2">Extracting keywords</span>
+        <span class="step-arrow">›</span>
+        <span class="step" id="step3">Summarizing</span>
+        <span class="step-arrow">›</span>
+        <span class="step" id="step4">Clustering topics</span>
+      </div>
+    </div>
+
+    <!-- ── Results Panel ── -->
+    <section id="resultsPanel" class="results-panel hidden">
+
+      <!-- Stats bar -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-value" id="statWords">—</span>
+          <span class="stat-label">Input Words</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="statSummary">—</span>
+          <span class="stat-label">Summary Lines</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="statKeywords">—</span>
+          <span class="stat-label">Keywords</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="statTopics">—</span>
+          <span class="stat-label">Topics</span>
+        </div>
+      </div>
+
+      <!-- Keywords Card -->
+      <div class="result-card keywords-card">
+        <div class="card-header">
+          <span class="card-icon">🔑</span>
+          <h2 class="card-title">Keywords</h2>
+        </div>
+        <div class="keywords-cloud" id="keywordsCloud"></div>
+      </div>
+
+      <!-- Summary Card -->
+      <div class="result-card summary-card">
+        <div class="card-header">
+          <span class="card-icon">📋</span>
+          <h2 class="card-title">Summary</h2>
+          <span class="card-badge">Extractive</span>
+        </div>
+        <ul class="summary-list" id="summaryList"></ul>
+      </div>
+
+      <!-- Topics Card -->
+      <div class="result-card topics-card">
+        <div class="card-header">
+          <span class="card-icon">🗂</span>
+          <h2 class="card-title">Topic Clusters</h2>
+          <span class="card-badge">KMeans</span>
+        </div>
+        <div class="topics-container" id="topicsContainer"></div>
+      </div>
+
+    </section>
+
+    <footer class="site-footer">
+      Built with Flask · NLTK · scikit-learn
+    </footer>
+
+  </div><!-- /app-shell -->
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
