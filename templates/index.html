@@ -1,153 +1,1067 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Lecture Notes Generator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NoteFlow — Multimodal Notes Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+button,input,textarea{font-family:inherit;border:none;cursor:pointer;background:none}
+
+/* ─── Tokens ─── */
+:root{
+  --bg:#fff; --bg-s:#fafafa; --bg-m:#f4f4f5; --bg-h:#ebebec;
+  --surface:#fff; --border:rgba(0,0,0,.08); --border-md:rgba(0,0,0,.12);
+  --t1:#09090b; --t2:#52525b; --t3:#a1a1aa; --t4:#d4d4d8;
+  --accent:#6366f1; --accent-d:#4f46e5;
+  --accent-l:rgba(99,102,241,.08); --accent-m:rgba(99,102,241,.16);
+  --green:#10b981; --green-l:rgba(16,185,129,.1);
+  --amber:#f59e0b; --amber-l:rgba(245,158,11,.1);
+  --red:#ef4444;   --red-l:rgba(239,68,68,.08);
+  --xs:0 1px 2px rgba(0,0,0,.04);
+  --sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --md:0 4px 12px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.04),0 0 0 1px rgba(0,0,0,.04);
+  --lg:0 12px 32px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);
+  --xl:0 24px 64px rgba(0,0,0,.1),0 8px 24px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04);
+  --r:6px; --r-md:10px; --r-lg:14px; --r-xl:20px;
+  --font:'Inter',-apple-system,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --dur:.18s;
+}
+[data-theme="dark"]{
+  --bg:#09090b; --bg-s:#0f0f11; --bg-m:#18181b; --bg-h:#27272a;
+  --surface:#18181b; --border:rgba(255,255,255,.07); --border-md:rgba(255,255,255,.12);
+  --t1:#fafafa; --t2:#a1a1aa; --t3:#52525b; --t4:#27272a;
+  --accent:#818cf8; --accent-d:#6366f1;
+  --accent-l:rgba(129,140,248,.1); --accent-m:rgba(129,140,248,.2);
+  --green:#34d399; --green-l:rgba(52,211,153,.1);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.1);
+  --red:#f87171; --red-l:rgba(248,113,113,.08);
+  --xs:0 1px 2px rgba(0,0,0,.3);
+  --sm:0 1px 3px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);
+  --md:0 4px 12px rgba(0,0,0,.4),0 2px 4px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.04);
+  --lg:0 12px 32px rgba(0,0,0,.5),0 4px 12px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);
+  --xl:0 24px 64px rgba(0,0,0,.6),0 8px 24px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);
+}
+
+/* ─── Base ─── */
+body{
+  background:var(--bg);color:var(--t1);font-family:var(--font);
+  font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  transition:background .3s var(--ease),color .3s var(--ease);
+}
+
+/* ─── Layout ─── */
+.page{max-width:1000px;margin:0 auto;padding:0 24px 100px}
+
+/* ─── Navbar ─── */
+.navbar{
+  position:sticky;top:0;z-index:100;padding:0;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  transition:background .3s var(--ease);
+}
+[data-theme="dark"] .navbar{background:rgba(9,9,11,.88)}
+.navbar-inner{
+  max-width:1000px;margin:0 auto;padding:0 24px;
+  height:52px;display:flex;align-items:center;justify-content:space-between;
+}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;letter-spacing:-.03em;color:var(--t1)}
+.logo-mark{
+  width:26px;height:26px;border-radius:7px;background:var(--t1);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:transform var(--dur) var(--spring);
+}
+.logo:hover .logo-mark{transform:scale(1.1) rotate(-5deg)}
+.logo-mark svg{width:13px;height:13px}
+.logo-badge{
+  font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-l);border:1px solid var(--accent-m);
+  border-radius:999px;padding:2px 8px;margin-left:2px;
+}
+.nav-right{display:flex;align-items:center;gap:8px}
+.theme-btn{
+  width:30px;height:30px;border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--t2);
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease),transform var(--dur) var(--spring);
+}
+.theme-btn:hover{background:var(--bg-m);color:var(--t1)}
+.theme-btn:active{transform:scale(.9)}
+
+/* ─── Hero ─── */
+.hero{text-align:center;padding:64px 0 52px;animation:fadeUp .6s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:11.5px;font-weight:500;color:var(--t2);
+  background:var(--bg-m);border:1px solid var(--border);border-radius:999px;
+  padding:4px 14px;margin-bottom:24px;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-l);animation:dotPulse 2s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
+.hero h1{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.045em;line-height:1.08;margin-bottom:18px}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--accent) 0%,#a78bfa 50%,var(--accent-d) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  background-size:200%;animation:gradShift 5s ease infinite;
+}
+@keyframes gradShift{0%,100%{background-position:0%}50%{background-position:100%}}
+.hero p{font-size:1rem;color:var(--t2);max-width:480px;margin:0 auto;line-height:1.7}
+
+/* ─── Mode tabs ─── */
+.mode-tabs{
+  display:flex;align-items:center;gap:2px;
+  background:var(--bg-m);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:4px;
+  margin:0 auto 32px;width:fit-content;
+  animation:fadeUp .5s .1s var(--ease) both;
+}
+.tab{
+  display:flex;align-items:center;gap:7px;
+  font-size:13px;font-weight:500;color:var(--t2);
+  padding:8px 18px;border-radius:var(--r-md);cursor:pointer;
+  transition:color var(--dur) var(--ease),background var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+  user-select:none;
+}
+.tab:hover{color:var(--t1)}
+.tab.active{
+  background:var(--surface);color:var(--t1);
+  box-shadow:var(--sm);
+}
+.tab-icon{font-size:15px;line-height:1}
+
+/* ─── Card ─── */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);box-shadow:var(--xl);
+  overflow:hidden;position:relative;
+  animation:fadeUp .6s .2s var(--ease) both;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent-l),var(--accent-m),var(--accent-l),transparent);
+}
+
+/* ─── App body: two columns ─── */
+.app-body{display:grid;grid-template-columns:1fr 1fr;min-height:540px}
+.col{padding:28px 30px}
+.col-left{border-right:1px solid var(--border)}
+
+/* ─── Tab panels ─── */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ─── Col label ─── */
+.col-label{
+  font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.col-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── Textarea ─── */
+.app-ta{
+  width:100%;height:170px;background:var(--bg-s);
+  border:1px solid var(--border);border-radius:var(--r-lg);
+  color:var(--t1);font-size:13.5px;line-height:1.75;
+  padding:14px 16px;resize:none;outline:none;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),background var(--dur) var(--ease);
+}
+.app-ta::placeholder{color:var(--t3);font-size:13px}
+.app-ta:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-l)}
+.ta-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px 0 14px;padding:6px 0 12px}
+.ta-count{font-size:11px;color:var(--t3);transition:color var(--dur) var(--ease)}
+.ta-count.live{color:var(--accent)}
+.ta-hint{font-size:11px;color:var(--t4)}
+
+/* ─── Upload drop zone ─── */
+.drop-zone{
+  border:1.5px dashed var(--border-md);border-radius:var(--r-lg);
+  padding:26px 16px;text-align:center;cursor:pointer;
+  background:var(--bg-s);position:relative;
+  transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.drop-zone input{display:none}
+.drop-zone:hover{border-color:var(--accent);background:var(--accent-l);box-shadow:0 0 0 3px var(--accent-l)}
+.drop-zone.over{border-color:var(--accent);background:var(--accent-l);box-shadow:0 0 0 4px var(--accent-m)}
+.drop-zone.has-file{border-color:var(--green);background:var(--green-l)}
+.dz-icon{font-size:26px;display:block;margin-bottom:8px;transition:transform var(--dur) var(--spring)}
+.drop-zone:hover .dz-icon{transform:translateY(-3px) scale(1.1)}
+.dz-title{font-size:13px;font-weight:500;color:var(--t2)}
+.dz-title strong{color:var(--accent);cursor:pointer}
+.dz-sub{font-size:11px;color:var(--t3);margin-top:3px}
+.dz-formats{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:10px}
+.fmt-tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--bg-m);border:1px solid var(--border);color:var(--t3)}
+
+/* ─── Audio recorder ─── */
+.recorder{margin-bottom:16px}
+.rec-row{display:flex;align-items:center;gap:10px}
+.btn-rec{
+  display:flex;align-items:center;gap:7px;
+  height:38px;padding:0 18px;border-radius:var(--r-md);
+  font-size:13px;font-weight:600;color:var(--t1);
+  background:var(--bg-m);border:1px solid var(--border);
+  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),transform var(--dur) var(--spring);
+}
+.btn-rec:hover{background:var(--bg-h);border-color:var(--border-md)}
+.btn-rec:active{transform:scale(.97)}
+.btn-rec.recording{color:#fff;background:#ef4444;border-color:#dc2626;animation:recPulse 1.2s ease-in-out infinite}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.btn-rec:not(.recording) .rec-dot{background:#ef4444}
+.rec-timer{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--t2);letter-spacing:.04em}
+.rec-preview{margin-top:10px}
+.rec-preview audio{width:100%;height:32px;border-radius:var(--r)}
+
+/* ─── Whisper model selector ─── */
+.model-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:16px;
+  padding:10px 12px;border-radius:var(--r-md);
+  background:var(--bg-m);border:1px solid var(--border);
+  font-size:12.5px;
+}
+.model-row label{color:var(--t2);font-weight:500;flex-shrink:0}
+.model-select{
+  flex:1;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:4px 8px;font-size:12px;color:var(--t1);outline:none;
+  cursor:pointer;transition:border-color var(--dur) var(--ease);
+}
+.model-select:focus{border-color:var(--accent)}
+.model-hint{font-size:11px;color:var(--t3);flex-shrink:0}
+
+/* ─── Divider ─── */
+.or-row{display:flex;align-items:center;gap:12px;margin:14px 0}
+.or-line{flex:1;height:1px;background:var(--border)}
+.or-txt{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+
+/* ─── Generate button ─── */
+.btn-generate{
+  width:100%;height:42px;margin-top:16px;
+  background:var(--t1);color:var(--bg);
+  font-size:13.5px;font-weight:600;letter-spacing:-.01em;
+  border-radius:var(--r-md);position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:var(--sm);
+  transition:transform var(--dur) var(--spring),box-shadow var(--dur) var(--ease),opacity var(--dur) var(--ease);
+}
+.btn-generate::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:50%;
+  background:linear-gradient(to bottom,rgba(255,255,255,.09),transparent);pointer-events:none;
+}
+.btn-shimmer{
+  position:absolute;inset:0;
+  background:linear-gradient(108deg,transparent 30%,rgba(255,255,255,.14) 50%,transparent 70%);
+  transform:translateX(-110%);transition:none;pointer-events:none;
+}
+.btn-generate:hover .btn-shimmer{transform:translateX(110%);transition:transform .6s var(--ease)}
+.btn-generate:hover{
+  transform:translateY(-1px);box-shadow:var(--md),0 0 0 3px var(--accent-l),0 0 16px var(--accent-m);
+}
+.btn-generate:active{transform:scale(.98)}
+.btn-generate:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:var(--xs)}
+.btn-arr{
+  width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  transition:transform var(--dur) var(--spring);
+}
+.btn-generate:hover .btn-arr{transform:translateX(2px)}
+
+/* ─── Error ─── */
+.err-box{
+  display:flex;align-items:flex-start;gap:8px;
+  background:var(--red-l);border:1px solid rgba(239,68,68,.2);
+  border-radius:var(--r);padding:10px 12px;margin-top:10px;
+  font-size:12.5px;color:var(--red);line-height:1.5;
+  animation:errShake .38s var(--ease);
+}
+@keyframes errShake{0%,100%{transform:translateX(0)}18%{transform:translateX(-5px)}36%{transform:translateX(5px)}54%{transform:translateX(-3px)}72%{transform:translateX(3px)}}
+.err-box::before{content:'⚠';flex-shrink:0}
+
+/* ─── Right column states ─── */
+.right-col{display:flex;flex-direction:column;height:100%}
+
+/* Placeholder */
+.placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;gap:10px;color:var(--t3);text-align:center;padding:32px;
+}
+.ph-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:var(--bg-m);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  animation:float 3.5s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ph-title{font-size:13.5px;font-weight:600;color:var(--t2)}
+.ph-sub{font-size:12px;max-width:190px;line-height:1.6}
+
+/* Loading pane */
+.loading-pane{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;gap:18px;padding:32px;
+  animation:fadeUp .3s var(--ease) both;
+}
+.orbital{width:52px;height:52px;position:relative;flex-shrink:0}
+.o-ring{position:absolute;border-radius:50%;border:2px solid transparent;inset:0}
+.o1{border-top-color:var(--accent);border-right-color:rgba(99,102,241,.25);animation:spin .9s linear infinite;box-shadow:0 0 10px rgba(99,102,241,.2)}
+.o2{inset:9px;border-bottom-color:var(--green);border-left-color:rgba(16,185,129,.25);animation:spin .65s linear infinite reverse;opacity:.7}
+.o3{inset:19px;border-top-color:var(--amber);animation:spin .5s linear infinite}
+.o-core{position:absolute;inset:26px;border-radius:50%;background:var(--accent);animation:corePulse .9s ease-in-out infinite;box-shadow:0 0 6px var(--accent)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes corePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.55);opacity:.6}}
+.load-title{font-size:13.5px;font-weight:600;color:var(--t1)}
+.load-step{font-size:11.5px;color:var(--t3);text-align:center}
+.prog-track{width:150px;height:2px;background:var(--border);border-radius:999px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:999px;width:0%;transition:width .5s var(--ease);position:relative;overflow:hidden}
+.prog-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);background-size:200%;animation:shimmerSweep 1.3s ease-in-out infinite}
+@keyframes shimmerSweep{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.pipe-dots{display:flex;gap:5px}
+.pd{width:5px;height:5px;border-radius:50%;background:var(--border-md);transition:background .3s var(--ease),transform .3s var(--spring)}
+.pd.done{background:var(--green)}
+.pd.active{background:var(--accent);transform:scale(1.6)}
+
+/* Results pane */
+.results-pane{
+  overflow-y:auto;max-height:540px;padding:2px;
+  display:flex;flex-direction:column;flex:1;
+}
+.rs-strip{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);padding:10px 0 14px;margin-bottom:18px;flex-wrap:wrap}
+.rs-item{display:flex;align-items:baseline;gap:4px;cursor:default}
+.rs-num{font-size:17px;font-weight:800;letter-spacing:-.04em;color:var(--t1);transition:transform var(--dur) var(--spring)}
+.rs-item:hover .rs-num{transform:scale(1.08)}
+.rs-lbl{font-size:10.5px;color:var(--t3);font-weight:500}
+.rs-div{width:1px;height:18px;background:var(--border)}
+
+/* Transcript panel (audio/video only) */
+.transcript-block{
+  background:var(--bg-s);border:1px solid var(--border);border-radius:var(--r-md);
+  padding:12px 14px;margin-bottom:16px;max-height:120px;overflow-y:auto;
+  font-size:12px;line-height:1.7;color:var(--t2);
+}
+.transcript-block-title{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+
+/* Result blocks */
+.rb{margin-bottom:18px;animation:fadeUp .4s var(--ease) both}
+.rb:nth-child(1){animation-delay:.04s}.rb:nth-child(2){animation-delay:.1s}.rb:nth-child(3){animation-delay:.16s}.rb:nth-child(4){animation-delay:.22s}
+.rb-title{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:9px}
+.kw-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.kw{
+  font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:999px;
+  border:1px solid var(--border-md);color:var(--t2);background:var(--bg-m);
+  cursor:default;transition:border-color var(--dur) var(--ease),color var(--dur) var(--ease),background var(--dur) var(--ease),transform var(--dur) var(--spring),box-shadow var(--dur) var(--ease);
+  animation:kwPop .3s var(--spring) both;
+}
+@keyframes kwPop{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
+.kw:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l);transform:translateY(-2px);box-shadow:var(--sm)}
+.sum-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.sum-item{
+  display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:var(--r-md);
+  font-size:12.5px;line-height:1.7;color:var(--t2);border:1px solid transparent;cursor:default;
+  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),color var(--dur) var(--ease),transform var(--dur) var(--ease);
+  animation:fadeUp .3s var(--ease) both;
+}
+.sum-item:hover{background:var(--bg-s);border-color:var(--border);color:var(--t1);transform:translateX(3px)}
+.sum-n{
+  flex-shrink:0;width:19px;height:19px;border-radius:5px;
+  background:var(--bg-m);border:1px solid var(--border);
+  font-size:9.5px;font-weight:700;color:var(--t3);
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
+}
+.sum-item:hover .sum-n{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hi{background:var(--accent-l);color:var(--accent);border-radius:3px;padding:0 2px;font-weight:500}
+.topic-block{margin-bottom:12px}
+.topic-head{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--t2);margin-bottom:7px;cursor:default;transition:color var(--dur) var(--ease)}
+.topic-head:hover{color:var(--accent)}
+.t-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;transition:transform var(--dur) var(--spring)}
+.topic-head:hover .t-dot{transform:scale(1.6)}
+.topic-sents{display:flex;flex-direction:column;gap:4px;padding-left:13px}
+.t-sent{font-size:12px;line-height:1.65;color:var(--t3);padding:6px 10px;border-left:2px solid var(--border);border-radius:0 var(--r) var(--r) 0;transition:border-left-color var(--dur) var(--ease),color var(--dur) var(--ease),background var(--dur) var(--ease)}
+.t-sent:hover{border-left-color:var(--accent);color:var(--t2);background:var(--accent-l)}
+
+/* Frame bar (macOS style) */
+.frame-bar{height:38px;background:var(--bg-s);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:6px;flex-shrink:0}
+.fd{width:11px;height:11px;border-radius:50%}
+.fd-r{background:#ff5f57}.fd-y{background:#febc2e}.fd-g{background:#28c840}
+.frame-mid{flex:1;text-align:center;font-size:11px;color:var(--t3);letter-spacing:.02em}
+.frame-url{font-size:10.5px;color:var(--t3);background:var(--bg-m);border:1px solid var(--border);border-radius:var(--r);padding:2px 9px}
+
+.hidden{display:none!important}
+
+/* ─── Responsive ─── */
+@media(max-width:680px){
+  .app-body{grid-template-columns:1fr;min-height:auto}
+  .col-left{border-right:none;border-bottom:1px solid var(--border)}
+  .mode-tabs{flex-wrap:wrap}
+  .hero h1{font-size:2rem}
+}
+</style>
 </head>
 <body>
 
-  <!-- Ambient background blobs -->
-  <div class="bg-blob blob-1"></div>
-  <div class="bg-blob blob-2"></div>
-  <div class="bg-blob blob-3"></div>
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="navbar-inner">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      NoteFlow
+      <span class="logo-badge">Multimodal</span>
+    </div>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+        <span id="themeIcon">☀️</span>
+      </button>
+    </div>
+  </div>
+</header>
 
-  <div class="app-shell">
+<div class="page">
 
-    <!-- ── Header ── -->
-    <header class="site-header">
-      <div class="header-badge">NLP · TF-IDF · KMeans</div>
-      <h1 class="site-title">
-        <span class="title-accent">Smart</span> Lecture Notes
-        <br/>Generator
-      </h1>
-      <p class="site-subtitle">
-        Paste your lecture text or upload a <code>.txt</code> file — get structured notes,
-        keywords, and topic clusters in seconds.
-      </p>
-    </header>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Text · Audio · Video — all in one pipeline
+  </div>
+  <h1>Lectures into notes,<br/><em>any format</em></h1>
+  <p>Paste text, upload a recording, or drop a video file. NoteFlow transcribes and structures your lecture notes using Whisper + TF-IDF + KMeans.</p>
+</section>
 
-    <!-- ── Input Panel ── -->
-    <section class="input-panel">
+<!-- MODE TABS -->
+<div class="mode-tabs" role="tablist">
+  <div class="tab active" data-tab="text" role="tab" aria-selected="true">
+    <span class="tab-icon">📝</span> Text
+  </div>
+  <div class="tab" data-tab="audio" role="tab" aria-selected="false">
+    <span class="tab-icon">🎙️</span> Audio
+  </div>
+  <div class="tab" data-tab="video" role="tab" aria-selected="false">
+    <span class="tab-icon">🎬</span> Video
+  </div>
+</div>
 
-      <div class="input-group">
-        <label class="field-label" for="lectureText">
-          <span class="label-icon">✍</span> Lecture Text
-        </label>
-        <textarea
-          id="lectureText"
-          class="text-input"
-          placeholder="Paste your lecture content here…&#10;&#10;Example: Machine learning is a subset of artificial intelligence that enables systems to learn from data and improve without being explicitly programmed..."
-          rows="10"
-        ></textarea>
-        <div class="char-counter"><span id="wordCount">0</span> words</div>
+<!-- APP CARD -->
+<div class="card">
+  <div class="frame-bar">
+    <div class="fd fd-r"></div><div class="fd fd-y"></div><div class="fd fd-g"></div>
+    <div class="frame-mid" id="frameTitle">NoteFlow — Text Input</div>
+    <div class="frame-url">localhost:5000</div>
+  </div>
+
+  <div class="app-body">
+
+    <!-- LEFT: Inputs -->
+    <div class="col col-left">
+
+      <!-- ── TEXT PANEL ── -->
+      <div class="tab-panel active" id="panel-text">
+        <div class="col-label">Lecture text</div>
+        <textarea class="app-ta" id="taText"
+          placeholder="Paste lecture content here…&#10;&#10;e.g. Machine learning is a branch of artificial intelligence that builds systems which learn from data to improve performance without explicit programming…"
+          spellcheck="false" aria-label="Lecture text"></textarea>
+        <div class="ta-meta">
+          <span class="ta-count" id="wcText">0 words</span>
+          <span class="ta-hint">5+ sentences recommended</span>
+        </div>
+
+        <div class="or-row"><div class="or-line"></div><span class="or-txt">or upload .txt</span><div class="or-line"></div></div>
+
+        <div class="drop-zone" id="txtDrop">
+          <input type="file" id="txtFile" accept=".txt"/>
+          <span class="dz-icon">📄</span>
+          <p class="dz-title">Drop a file or <strong id="txtBrowse">browse</strong></p>
+          <p class="dz-sub" id="txtLabel">Supports .txt files</p>
+        </div>
       </div>
 
-      <div class="divider-row">
-        <span class="divider-line"></span>
-        <span class="divider-label">or upload a file</span>
-        <span class="divider-line"></span>
+      <!-- ── AUDIO PANEL ── -->
+      <div class="tab-panel" id="panel-audio">
+        <div class="col-label">Audio source</div>
+
+        <!-- Model selector -->
+        <div class="model-row">
+          <label for="audioModel">Whisper model</label>
+          <select class="model-select" id="audioModel">
+            <option value="tiny">tiny — fastest (test use)</option>
+            <option value="base" selected>base — recommended ✓</option>
+            <option value="small">small — better accuracy</option>
+            <option value="medium">medium — high accuracy (GPU)</option>
+            <option value="large">large — best (GPU required)</option>
+          </select>
+          <span class="model-hint">runs locally</span>
+        </div>
+
+        <!-- Live recorder -->
+        <div class="recorder">
+          <div class="col-label">Record live</div>
+          <div class="rec-row">
+            <button class="btn-rec" id="recBtn">
+              <span class="rec-dot"></span>
+              <span id="recTxt">Start recording</span>
+            </button>
+            <span class="rec-timer hidden" id="recTimer">00:00</span>
+          </div>
+          <div class="rec-preview hidden" id="recPreview">
+            <audio id="recAudio" controls></audio>
+          </div>
+        </div>
+
+        <div class="or-row"><div class="or-line"></div><span class="or-txt">or upload file</span><div class="or-line"></div></div>
+
+        <div class="drop-zone" id="audioDrop">
+          <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg,.flac,.webm"/>
+          <span class="dz-icon">🎙️</span>
+          <p class="dz-title">Drop audio or <strong id="audioBrowse">browse</strong></p>
+          <p class="dz-sub" id="audioLabel">Supports .mp3 .wav .m4a .ogg .flac</p>
+          <div class="dz-formats">
+            <span class="fmt-tag">mp3</span><span class="fmt-tag">wav</span>
+            <span class="fmt-tag">m4a</span><span class="fmt-tag">ogg</span>
+            <span class="fmt-tag">flac</span><span class="fmt-tag">webm</span>
+          </div>
+        </div>
       </div>
 
-      <div class="upload-zone" id="uploadZone">
-        <input type="file" id="fileInput" accept=".txt" hidden />
-        <div class="upload-icon">📄</div>
-        <p class="upload-text">Drop a <strong>.txt</strong> file here or <button class="upload-link" id="browseBtn">browse</button></p>
-        <p class="upload-hint" id="fileNameDisplay">No file selected</p>
+      <!-- ── VIDEO PANEL ── -->
+      <div class="tab-panel" id="panel-video">
+        <div class="col-label">Video source</div>
+
+        <div class="model-row">
+          <label for="videoModel">Whisper model</label>
+          <select class="model-select" id="videoModel">
+            <option value="tiny">tiny — fastest (test use)</option>
+            <option value="base" selected>base — recommended ✓</option>
+            <option value="small">small — better accuracy</option>
+            <option value="medium">medium — high accuracy (GPU)</option>
+            <option value="large">large — best (GPU required)</option>
+          </select>
+          <span class="model-hint">audio extracted with ffmpeg</span>
+        </div>
+
+        <div class="drop-zone" id="videoDrop">
+          <input type="file" id="videoFile" accept=".mp4,.mov,.avi,.mkv,.webm"/>
+          <span class="dz-icon">🎬</span>
+          <p class="dz-title">Drop video or <strong id="videoBrowse">browse</strong></p>
+          <p class="dz-sub" id="videoLabel">Supports .mp4 .mov .avi .mkv .webm</p>
+          <div class="dz-formats">
+            <span class="fmt-tag">mp4</span><span class="fmt-tag">mov</span>
+            <span class="fmt-tag">avi</span><span class="fmt-tag">mkv</span><span class="fmt-tag">webm</span>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;padding:10px 12px;background:var(--amber-l);border:1px solid rgba(245,158,11,.2);border-radius:var(--r);font-size:12px;color:var(--t2)">
+          ℹ️ Video processing extracts audio via <strong>ffmpeg</strong>, then transcribes with Whisper. Large files may take 1–3 minutes.
+        </div>
       </div>
 
-      <div class="action-row">
-        <button class="btn-generate" id="generateBtn">
-          <span class="btn-text">Generate Notes</span>
-          <span class="btn-icon">→</span>
-        </button>
-        <button class="btn-clear" id="clearBtn">Clear</button>
-      </div>
+      <!-- Generate button (shared) -->
+      <button class="btn-generate" id="genBtn">
+        <div class="btn-shimmer"></div>
+        <span id="genTxt">Generate Notes</span>
+        <div class="btn-arr" id="genArr">→</div>
+      </button>
 
-      <div id="errorBanner" class="error-banner hidden"></div>
-    </section>
-
-    <!-- ── Loading Spinner ── -->
-    <div id="loadingState" class="loading-state hidden">
-      <div class="spinner-ring"></div>
-      <p class="loading-text">Analyzing lecture content…</p>
-      <div class="loading-steps">
-        <span class="step active" id="step1">Tokenizing</span>
-        <span class="step-arrow">›</span>
-        <span class="step" id="step2">Extracting keywords</span>
-        <span class="step-arrow">›</span>
-        <span class="step" id="step3">Summarizing</span>
-        <span class="step-arrow">›</span>
-        <span class="step" id="step4">Clustering topics</span>
-      </div>
+      <div id="errBox" class="err-box hidden"></div>
     </div>
 
-    <!-- ── Results Panel ── -->
-    <section id="resultsPanel" class="results-panel hidden">
+    <!-- RIGHT: Output -->
+    <div class="col right-col" id="rightCol">
 
-      <!-- Stats bar -->
-      <div class="stats-bar">
-        <div class="stat-item">
-          <span class="stat-value" id="statWords">—</span>
-          <span class="stat-label">Input Words</span>
+      <!-- Placeholder -->
+      <div class="placeholder" id="phState">
+        <div class="ph-icon" id="phIcon">✨</div>
+        <p class="ph-title">Your notes will appear here</p>
+        <p class="ph-sub" id="phSub">Choose a mode and click Generate Notes</p>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading-pane hidden" id="loadPane">
+        <div class="orbital">
+          <div class="o-ring o1"></div>
+          <div class="o-ring o2"></div>
+          <div class="o-ring o3"></div>
+          <div class="o-core"></div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value" id="statSummary">—</span>
-          <span class="stat-label">Summary Lines</span>
+        <div style="text-align:center">
+          <div class="load-title" id="loadTitle">Processing…</div>
+          <div class="load-step" id="loadStep">Initializing…</div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value" id="statKeywords">—</span>
-          <span class="stat-label">Keywords</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-value" id="statTopics">—</span>
-          <span class="stat-label">Topics</span>
+        <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+        <div class="pipe-dots" id="pipeDots">
+          <div class="pd" id="pd1"></div>
+          <div class="pd" id="pd2"></div>
+          <div class="pd" id="pd3"></div>
+          <div class="pd" id="pd4"></div>
+          <div class="pd" id="pd5"></div>
         </div>
       </div>
 
-      <!-- Keywords Card -->
-      <div class="result-card keywords-card">
-        <div class="card-header">
-          <span class="card-icon">🔑</span>
-          <h2 class="card-title">Keywords</h2>
+      <!-- Results -->
+      <div class="results-pane hidden" id="resPane">
+        <div class="col-label">Results</div>
+
+        <div class="rs-strip">
+          <div class="rs-item"><span class="rs-num" id="rW">—</span><span class="rs-lbl">words</span></div>
+          <div class="rs-div"></div>
+          <div class="rs-item"><span class="rs-num" id="rS">—</span><span class="rs-lbl">summary lines</span></div>
+          <div class="rs-div"></div>
+          <div class="rs-item"><span class="rs-num" id="rK">—</span><span class="rs-lbl">keywords</span></div>
+          <div class="rs-div"></div>
+          <div class="rs-item"><span class="rs-num" id="rT">—</span><span class="rs-lbl">topics</span></div>
         </div>
-        <div class="keywords-cloud" id="keywordsCloud"></div>
+
+        <!-- Transcript (audio/video only) -->
+        <div class="rb hidden" id="transcriptBlock">
+          <div class="rb-title">Transcript</div>
+          <div class="transcript-block" id="transcriptText"></div>
+        </div>
+
+        <div class="rb" id="kwBlock">
+          <div class="rb-title">Keywords</div>
+          <div class="kw-wrap" id="kwWrap"></div>
+        </div>
+
+        <div class="rb" id="sumBlock">
+          <div class="rb-title">Summary</div>
+          <ul class="sum-list" id="sumList"></ul>
+        </div>
+
+        <div class="rb" id="topicBlock">
+          <div class="rb-title">Topic clusters</div>
+          <div id="topicWrap"></div>
+        </div>
       </div>
 
-      <!-- Summary Card -->
-      <div class="result-card summary-card">
-        <div class="card-header">
-          <span class="card-icon">📋</span>
-          <h2 class="card-title">Summary</h2>
-          <span class="card-badge">Extractive</span>
-        </div>
-        <ul class="summary-list" id="summaryList"></ul>
-      </div>
+    </div>
+  </div>
+</div>
 
-      <!-- Topics Card -->
-      <div class="result-card topics-card">
-        <div class="card-header">
-          <span class="card-icon">🗂</span>
-          <h2 class="card-title">Topic Clusters</h2>
-          <span class="card-badge">KMeans</span>
-        </div>
-        <div class="topics-container" id="topicsContainer"></div>
-      </div>
+</div><!-- /page -->
 
-    </section>
+<script>
+/* ═══════════════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════════════ */
+const html = document.documentElement;
+const themeBtn  = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+function setTheme(t) {
+  html.dataset.theme = t;
+  themeIcon.textContent = t === 'light' ? '☀️' : '🌙';
+  localStorage.setItem('nf-theme', t);
+}
+themeBtn.addEventListener('click', () => setTheme(html.dataset.theme === 'light' ? 'dark' : 'light'));
+setTheme(localStorage.getItem('nf-theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
 
-    <footer class="site-footer">
-      Built with Flask · NLTK · scikit-learn
-    </footer>
+/* ═══════════════════════════════════════════════════
+   TAB SWITCHING
+═══════════════════════════════════════════════════ */
+const FRAME_TITLES = {
+  text:  'NoteFlow — Text Input',
+  audio: 'NoteFlow — Audio Transcription',
+  video: 'NoteFlow — Video Transcription',
+};
+const PH_SUBS = {
+  text:  'Paste text or upload a .txt file',
+  audio: 'Upload or record audio to begin',
+  video: 'Upload a lecture video to begin',
+};
+let currentTab = 'text';
 
-  </div><!-- /app-shell -->
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const mode = tab.dataset.tab;
+    if (mode === currentTab) return;
+    currentTab = mode;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === mode));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${mode}`));
+    document.getElementById('frameTitle').textContent = FRAME_TITLES[mode];
+    document.getElementById('phSub').textContent     = PH_SUBS[mode];
+    showPane('placeholder');
+    hideErr();
+  });
+});
 
-  <script src="/static/script.js"></script>
+/* ═══════════════════════════════════════════════════
+   DROP ZONES — generic helper
+═══════════════════════════════════════════════════ */
+function setupDropZone(zoneId, inputId, browseId, labelId, onFile) {
+  const zone   = document.getElementById(zoneId);
+  const input  = document.getElementById(inputId);
+  const browse = document.getElementById(browseId);
+  const label  = document.getElementById(labelId);
+
+  browse.addEventListener('click', e => { e.stopPropagation(); input.click(); });
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') input.click(); });
+  input.addEventListener('change', () => { if (input.files[0]) onFile(input.files[0], label, zone); });
+
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('over'); });
+  zone.addEventListener('dragleave', e => { if (!zone.contains(e.relatedTarget)) zone.classList.remove('over'); });
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('over');
+    if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0], label, zone);
+  });
+}
+
+/* ── Text drop zone ── */
+let txtUploadedFile = null;
+const ta = document.getElementById('taText');
+const wcEl = document.getElementById('wcText');
+
+ta.addEventListener('input', () => {
+  const n = ta.value.trim().split(/\s+/).filter(Boolean).length;
+  wcEl.textContent = n + (n === 1 ? ' word' : ' words');
+  wcEl.className = 'ta-count' + (n > 0 ? ' live' : '');
+  if (ta.value.trim()) { txtUploadedFile = null; document.getElementById('txtLabel').textContent = 'Supports .txt files'; }
+});
+
+setupDropZone('txtDrop', 'txtFile', 'txtBrowse', 'txtLabel', (f, lbl, zone) => {
+  if (!f.name.endsWith('.txt')) { showErr('Only .txt files are supported in text mode.'); return; }
+  txtUploadedFile = f; lbl.textContent = '✓ ' + f.name;
+  zone.classList.add('has-file');
+  ta.value = ''; wcEl.textContent = '0 words'; wcEl.className = 'ta-count';
+});
+
+/* ── Audio drop zone ── */
+let audioFile = null;
+const AUDIO_EXTS = ['.mp3','.wav','.m4a','.ogg','.flac','.webm'];
+setupDropZone('audioDrop', 'audioFile', 'audioBrowse', 'audioLabel', (f, lbl, zone) => {
+  const ext = '.' + f.name.split('.').pop().toLowerCase();
+  if (!AUDIO_EXTS.includes(ext)) { showErr('Unsupported audio format. Use: ' + AUDIO_EXTS.join(' ')); return; }
+  audioFile = f; lbl.textContent = '✓ ' + f.name; zone.classList.add('has-file');
+  recBlob = null; // clear any recording
+  document.getElementById('recPreview').classList.add('hidden');
+});
+
+/* ── Video drop zone ── */
+let videoFile = null;
+const VIDEO_EXTS = ['.mp4','.mov','.avi','.mkv','.webm'];
+setupDropZone('videoDrop', 'videoFile', 'videoBrowse', 'videoLabel', (f, lbl, zone) => {
+  const ext = '.' + f.name.split('.').pop().toLowerCase();
+  if (!VIDEO_EXTS.includes(ext)) { showErr('Unsupported video format. Use: ' + VIDEO_EXTS.join(' ')); return; }
+  videoFile = f; lbl.textContent = '✓ ' + f.name; zone.classList.add('has-file');
+});
+
+/* ═══════════════════════════════════════════════════
+   LIVE AUDIO RECORDER
+═══════════════════════════════════════════════════ */
+let mediaRecorder = null;
+let recChunks     = [];
+let recBlob       = null;
+let recInterval   = null;
+let recSeconds    = 0;
+
+const recBtn     = document.getElementById('recBtn');
+const recTxt     = document.getElementById('recTxt');
+const recTimer   = document.getElementById('recTimer');
+const recPreview = document.getElementById('recPreview');
+const recAudio   = document.getElementById('recAudio');
+
+function formatTime(s) {
+  return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
+
+recBtn.addEventListener('click', async () => {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    // Stop
+    mediaRecorder.stop();
+    clearInterval(recInterval);
+    recBtn.classList.remove('recording');
+    recTxt.textContent = 'Start recording';
+    recTimer.classList.add('hidden');
+    return;
+  }
+
+  // Start
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recChunks = []; recSeconds = 0;
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      recBlob = new Blob(recChunks, { type: 'audio/webm' });
+      recAudio.src = URL.createObjectURL(recBlob);
+      recPreview.classList.remove('hidden');
+      audioFile = null; // clear file upload if recording used
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start();
+    recBtn.classList.add('recording');
+    recTxt.textContent = 'Stop recording';
+    recTimer.classList.remove('hidden');
+    recTimer.textContent = '00:00';
+    recInterval = setInterval(() => { recSeconds++; recTimer.textContent = formatTime(recSeconds); }, 1000);
+  } catch (err) {
+    showErr('Microphone access denied. Please allow microphone access in your browser.');
+  }
+});
+
+/* ═══════════════════════════════════════════════════
+   GENERATE BUTTON
+═══════════════════════════════════════════════════ */
+const genBtn = document.getElementById('genBtn');
+const genTxt = document.getElementById('genTxt');
+const genArr = document.getElementById('genArr');
+
+genBtn.addEventListener('click', async () => {
+  hideErr();
+
+  if (currentTab === 'text')  return handleText();
+  if (currentTab === 'audio') return handleAudio();
+  if (currentTab === 'video') return handleVideo();
+});
+
+/* ── Text handler ── */
+async function handleText() {
+  const text = ta.value.trim();
+  if (!text && !txtUploadedFile) { showErr('Please enter lecture text or upload a .txt file.'); return; }
+
+  startSync();
+  try {
+    let data;
+    if (txtUploadedFile) {
+      const fd = new FormData(); fd.append('file', txtUploadedFile);
+      data = await (await fetch('/upload', { method:'POST', body:fd })).json();
+    } else {
+      data = await (await fetch('/summarize', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ text })
+      })).json();
+    }
+    if (data.error) { showErr(data.error); return; }
+    render(data, false);
+  } catch { showErr('Cannot connect to Flask server. Is it running on port 5000?'); }
+  finally  { stopSync(); }
+}
+
+/* ── Audio handler ── */
+async function handleAudio() {
+  if (!audioFile && !recBlob) { showErr('Please upload an audio file or record audio first.'); return; }
+
+  const fd = new FormData();
+  if (recBlob) {
+    fd.append('file', recBlob, 'recording.webm');
+  } else {
+    fd.append('file', audioFile);
+  }
+  // Optionally pass model (backend reads from a param or env; here we set env via UI)
+  await handleAsyncJob('/transcribe/audio', fd, 'Transcribing audio…');
+}
+
+/* ── Video handler ── */
+async function handleVideo() {
+  if (!videoFile) { showErr('Please upload a video file first.'); return; }
+
+  const fd = new FormData();
+  fd.append('file', videoFile);
+  await handleAsyncJob('/transcribe/video', fd, 'Processing video…');
+}
+
+/* ─── Async job flow ─── */
+const AUDIO_STEPS = ['Uploading…', 'Transcribing speech…', 'Running NLP…', 'Extracting keywords…', 'Clustering topics…'];
+const AUDIO_PCTS  = [8, 35, 65, 80, 95];
+
+async function handleAsyncJob(endpoint, formData, initLabel) {
+  startAsync(initLabel);
+  let jobId;
+  try {
+    const resp = await fetch(endpoint, { method:'POST', body:formData });
+    const init = await resp.json();
+    if (!resp.ok || init.error) { showErr(init.error || 'Upload failed.'); return; }
+    jobId = init.job_id;
+  } catch { showErr('Upload failed. Is Flask running?'); stopSync(); return; }
+
+  // Poll /status/<job_id> every 2 seconds
+  let step = 0;
+  const poll = setInterval(async () => {
+    try {
+      const s = await (await fetch(`/status/${jobId}`)).json();
+
+      // Advance step UI
+      step = Math.min(step + 1, AUDIO_STEPS.length - 1);
+      setStep(step, AUDIO_STEPS[step], AUDIO_PCTS[step]);
+
+      if (s.status === 'done') {
+        clearInterval(poll);
+        stopSync();
+        render(s.result, true);
+      } else if (s.status === 'error') {
+        clearInterval(poll);
+        stopSync();
+        showErr(s.error || 'Transcription failed.');
+      }
+    } catch {
+      clearInterval(poll);
+      stopSync();
+      showErr('Lost connection to server.');
+    }
+  }, 2000);
+}
+
+/* ═══════════════════════════════════════════════════
+   LOADING STATES
+═══════════════════════════════════════════════════ */
+const TEXT_STEPS = ['Tokenizing…', 'TF-IDF…', 'Scoring sentences…', 'Extracting keywords…', 'Clustering…'];
+const TEXT_PCTS  = [15, 35, 60, 80, 95];
+
+let syncTimer = null;
+const loadTitle = document.getElementById('loadTitle');
+const loadStep  = document.getElementById('loadStep');
+const progFill  = document.getElementById('progFill');
+const pDots     = [1,2,3,4,5].map(n => document.getElementById('pd'+n));
+
+function startSync() {
+  showPane('loading');
+  genBtn.disabled = true; genTxt.textContent = 'Processing…'; genArr.textContent = '⏳';
+  pDots.forEach(d => d.classList.remove('active','done'));
+  progFill.style.width = '0%'; loadTitle.textContent = 'Running NLP Pipeline';
+  let cur = 0; setStep(0, TEXT_STEPS[0], TEXT_PCTS[0]);
+  syncTimer = setInterval(() => {
+    pDots[cur].classList.remove('active'); pDots[cur].classList.add('done'); cur++;
+    if (cur < pDots.length) setStep(cur, TEXT_STEPS[cur], TEXT_PCTS[cur]);
+    else { clearInterval(syncTimer); progFill.style.width='100%'; loadStep.textContent='Finalizing…'; }
+  }, 400);
+}
+
+function startAsync(label) {
+  startSync();
+  loadTitle.textContent = label;
+  clearInterval(syncTimer); // let poll drive steps
+}
+
+function setStep(i, label, pct) {
+  pDots.forEach((d, di) => { d.classList.remove('active'); if (di < i) d.classList.add('done'); });
+  if (i < pDots.length) pDots[i].classList.add('active');
+  loadStep.textContent = label;
+  progFill.style.width = pct + '%';
+}
+
+function stopSync() {
+  clearInterval(syncTimer);
+  genBtn.disabled = false; genTxt.textContent = 'Generate Notes'; genArr.textContent = '→';
+  pDots.forEach(d => d.classList.remove('active','done'));
+  progFill.style.width = '0%';
+}
+
+/* ═══════════════════════════════════════════════════
+   PANE SWITCHING
+═══════════════════════════════════════════════════ */
+const ph   = document.getElementById('phState');
+const load = document.getElementById('loadPane');
+const res  = document.getElementById('resPane');
+
+function showPane(which) {
+  ph.classList.add('hidden'); load.classList.add('hidden'); res.classList.add('hidden');
+  if (which === 'placeholder') ph.classList.remove('hidden');
+  else if (which === 'loading') load.classList.remove('hidden');
+  else res.classList.remove('hidden');
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER RESULTS
+═══════════════════════════════════════════════════ */
+function render(data, isAV) {
+  const { summary, keywords, topics, word_count, transcript } = data;
+
+  // Stats
+  animCount('rW', word_count || 0);
+  animCount('rS', summary.length);
+  animCount('rK', keywords.length);
+  animCount('rT', topics.length);
+
+  // Transcript (audio/video only)
+  const tb = document.getElementById('transcriptBlock');
+  const tt = document.getElementById('transcriptText');
+  if (isAV && transcript) {
+    tt.textContent = transcript;
+    tb.classList.remove('hidden');
+  } else {
+    tb.classList.add('hidden');
+  }
+
+  // Keywords
+  const kw = document.getElementById('kwWrap'); kw.innerHTML = '';
+  keywords.forEach((w, i) => {
+    const s = document.createElement('span');
+    s.className = 'kw'; s.textContent = w;
+    s.style.animationDelay = (i * 0.04) + 's';
+    kw.appendChild(s);
+  });
+
+  // Summary
+  const sl = document.getElementById('sumList'); sl.innerHTML = '';
+  summary.forEach((txt, i) => {
+    const li = document.createElement('li'); li.className = 'sum-item';
+    li.style.animationDelay = (i * 0.055) + 's';
+    const n = document.createElement('span'); n.className = 'sum-n'; n.textContent = i + 1;
+    const t = document.createElement('span'); t.innerHTML = hl(txt, keywords);
+    li.appendChild(n); li.appendChild(t); sl.appendChild(li);
+  });
+
+  // Topics
+  const tw = document.getElementById('topicWrap'); tw.innerHTML = '';
+  topics.forEach(t => {
+    const blk = document.createElement('div'); blk.className = 'topic-block';
+    const h = document.createElement('div'); h.className = 'topic-head';
+    const dot = document.createElement('span'); dot.className = 't-dot';
+    h.appendChild(dot); h.appendChild(document.createTextNode(t.topic)); blk.appendChild(h);
+    const ss = document.createElement('div'); ss.className = 'topic-sents';
+    t.sentences.forEach(s => {
+      const d = document.createElement('div'); d.className = 't-sent';
+      d.innerHTML = hl(s, keywords); ss.appendChild(d);
+    });
+    blk.appendChild(ss); tw.appendChild(blk);
+  });
+
+  showPane('results');
+}
+
+/* ═══════════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════════ */
+function animCount(id, target) {
+  const el = document.getElementById(id);
+  const t0 = performance.now(), dur = 650;
+  (function tick(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+function hl(text, kws) {
+  let r = escH(text);
+  [...kws].sort((a,b)=>b.length-a.length).forEach(k=>{
+    r = r.replace(new RegExp('\\b('+escR(k)+')\\b','gi'),'<span class="hi">$1</span>');
+  });
+  return r;
+}
+function escH(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function escR(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+
+const errBox = document.getElementById('errBox');
+function showErr(m) {
+  errBox.textContent = m; errBox.classList.remove('hidden');
+  errBox.style.animation = 'none';
+  requestAnimationFrame(() => { errBox.style.animation = 'errShake .38s var(--ease)'; });
+  showPane('placeholder');
+}
+function hideErr() { errBox.classList.add('hidden'); }
+</script>
 </body>
 </html>

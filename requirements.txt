@@ -1,4 +1,33 @@
+# ── Core web framework ────────────────────────────────────────────
 flask>=2.3.0
+
+# ── NLP pipeline (existing) ───────────────────────────────────────
 nltk>=3.8.1
 scikit-learn>=1.3.0
 numpy>=1.24.0
+
+# ── Speech-to-Text: OpenAI Whisper (local, no API key needed) ────
+# Installs the whisper Python package + torch dependency
+openai-whisper>=20231117
+
+# ── PyTorch (Whisper dependency) ──────────────────────────────────
+# CPU-only version — much smaller download (~200 MB vs ~2 GB for GPU)
+# For GPU support, install separately:
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+torch>=2.0.0
+
+# ── Audio processing utilities ────────────────────────────────────
+# ffmpeg-python: Python bindings for ffmpeg (optional convenience wrapper)
+# Note: ffmpeg binary itself must be installed separately (see README)
+ffmpeg-python>=0.2.0
+
+# Tqdm: progress bars (used internally by Whisper)
+tqdm>=4.65.0
+
+# ── Optional: faster audio loading ───────────────────────────────
+# Whisper uses soundfile/librosa internally; these improve compatibility
+soundfile>=0.12.1
+
+# ── Production WSGI server (replace Flask dev server) ─────────────
+# gunicorn>=21.2.0   # Linux/Mac only
+# waitress>=2.1.2    # Windows-compatible
