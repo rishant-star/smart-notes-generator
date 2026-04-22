@@ -366,8 +366,8 @@ This project is licensed under the **MIT License** — see `LICENSE` file for de
 
 - **GitHub**: [github.com/rishant/SmartNoteGenrator](https://github.com/rishant/SmartNoteGenrator)
 - **Issues**: [GitHub Issues](https://github.com/rishant/SmartNoteGenrator/issues)
-- **Email**: rishant@example.com
-- **Twitter**: [@rishant_dev](https://twitter.com/rishant_dev)
+- **Email**: [ranjanrishant40@gmail.com](mailto:ranjanrishant40@gmail.com)
+- **Twitter**: [@rishanr_ranjan](https://twitter.com/rishanr_ranjan)
 
 ---
 
@@ -395,7 +395,7 @@ This project is licensed under the **MIT License** — see `LICENSE` file for de
 
 ---
 
-**Made with ❤️ by [Rishant](https://github.com/rishant)**
+**Made with ❤️ by [Rishant Ranjan](https://twitter.com/rishanr_ranjan)**
 
 ⭐ If this project helped you, consider giving it a star!
 
@@ -412,4 +412,5 @@ This project is licensed under the **MIT License** — see `LICENSE` file for de
 ---
 
 *Last Updated: April 22, 2026*  
-*Version: 1.0.0*
+*Version: 1.0.0*  
+*Author: Rishant Ranjan*
