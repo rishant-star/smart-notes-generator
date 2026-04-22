@@ -56,9 +56,6 @@ body{
   transition:background .3s var(--ease),color .3s var(--ease);
 }
 
-/* ─── Layout ─── */
-.page{max-width:1000px;margin:0 auto;padding:0 24px 100px}
-
 /* ─── Navbar ─── */
 .navbar{
   position:sticky;top:0;z-index:100;padding:0;
@@ -68,9 +65,10 @@ body{
 }
 [data-theme="dark"] .navbar{background:rgba(9,9,11,.88)}
 .navbar-inner{
-  max-width:1000px;margin:0 auto;padding:0 24px;
-  height:52px;display:flex;align-items:center;justify-content:space-between;
+  max-width:1400px;margin:0 auto;padding:0 24px;
+  height:60px;display:flex;align-items:center;justify-content:space-between;
 }
+.navbar-left{display:flex;align-items:center;gap:16px}
 .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;letter-spacing:-.03em;color:var(--t1)}
 .logo-mark{
   width:26px;height:26px;border-radius:7px;background:var(--t1);
@@ -79,11 +77,13 @@ body{
 }
 .logo:hover .logo-mark{transform:scale(1.1) rotate(-5deg)}
 .logo-mark svg{width:13px;height:13px}
-.logo-badge{
-  font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
-  color:var(--accent);background:var(--accent-l);border:1px solid var(--accent-m);
-  border-radius:999px;padding:2px 8px;margin-left:2px;
+.nav-back{
+  display:none;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:var(--r-md);background:var(--bg-m);
+  font-size:13px;color:var(--t2);cursor:pointer;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
 }
+.nav-back:hover{background:var(--bg-h);color:var(--t1)}
 .nav-right{display:flex;align-items:center;gap:8px}
 .theme-btn{
   width:30px;height:30px;border-radius:var(--r);
@@ -94,7 +94,13 @@ body{
 .theme-btn:hover{background:var(--bg-m);color:var(--t1)}
 .theme-btn:active{transform:scale(.9)}
 
-/* ─── Hero ─── */
+/* ─── Pages ─── */
+.page{display:none}
+.page.active{display:block}
+
+/* ─── INPUT PAGE ─── */
+.page-input{max-width:1000px;margin:0 auto;padding:0 24px 100px}
+
 .hero{text-align:center;padding:64px 0 52px;animation:fadeUp .6s var(--ease) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .hero-badge{
@@ -131,10 +137,7 @@ body{
   user-select:none;
 }
 .tab:hover{color:var(--t1)}
-.tab.active{
-  background:var(--surface);color:var(--t1);
-  box-shadow:var(--sm);
-}
+.tab.active{background:var(--surface);color:var(--t1);box-shadow:var(--sm)}
 .tab-icon{font-size:15px;line-height:1}
 
 /* ─── Card ─── */
@@ -149,16 +152,14 @@ body{
   background:linear-gradient(90deg,transparent,var(--accent-l),var(--accent-m),var(--accent-l),transparent);
 }
 
-/* ─── App body: two columns ─── */
-.app-body{display:grid;grid-template-columns:1fr 1fr;min-height:540px}
-.col{padding:28px 30px}
-.col-left{border-right:1px solid var(--border)}
+/* ─── Input body ─── */
+.input-body{display:grid;grid-template-columns:1fr 1fr;min-height:540px}
+.input-col{padding:28px 30px}
+.input-col-left{border-right:1px solid var(--border)}
 
-/* ─── Tab panels ─── */
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
-/* ─── Col label ─── */
 .col-label{
   font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
   color:var(--t3);margin-bottom:14px;
@@ -176,12 +177,12 @@ body{
 }
 .app-ta::placeholder{color:var(--t3);font-size:13px}
 .app-ta:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-l)}
-.ta-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px 0 14px;padding:6px 0 12px}
+.ta-meta{display:flex;justify-content:space-between;align-items:center;margin:8px 0 14px;padding:6px 0 12px}
 .ta-count{font-size:11px;color:var(--t3);transition:color var(--dur) var(--ease)}
 .ta-count.live{color:var(--accent)}
 .ta-hint{font-size:11px;color:var(--t4)}
 
-/* ─── Upload drop zone ─── */
+/* ─── Drop zone ─── */
 .drop-zone{
   border:1.5px dashed var(--border-md);border-radius:var(--r-lg);
   padding:26px 16px;text-align:center;cursor:pointer;
@@ -200,7 +201,7 @@ body{
 .dz-formats{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:10px}
 .fmt-tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--bg-m);border:1px solid var(--border);color:var(--t3)}
 
-/* ─── Audio recorder ─── */
+/* ─── Recorder ─── */
 .recorder{margin-bottom:16px}
 .rec-row{display:flex;align-items:center;gap:10px}
 .btn-rec{
@@ -220,7 +221,7 @@ body{
 .rec-preview{margin-top:10px}
 .rec-preview audio{width:100%;height:32px;border-radius:var(--r)}
 
-/* ─── Whisper model selector ─── */
+/* ─── Model selector ─── */
 .model-row{
   display:flex;align-items:center;gap:10px;
   margin-bottom:16px;
@@ -242,7 +243,7 @@ body{
 .or-line{flex:1;height:1px;background:var(--border)}
 .or-txt{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
 
-/* ─── Generate button ─── */
+/* ─── Buttons ─── */
 .btn-generate{
   width:100%;height:42px;margin-top:16px;
   background:var(--t1);color:var(--bg);
@@ -262,17 +263,21 @@ body{
   transform:translateX(-110%);transition:none;pointer-events:none;
 }
 .btn-generate:hover .btn-shimmer{transform:translateX(110%);transition:transform .6s var(--ease)}
-.btn-generate:hover{
-  transform:translateY(-1px);box-shadow:var(--md),0 0 0 3px var(--accent-l),0 0 16px var(--accent-m);
-}
+.btn-generate:hover{transform:translateY(-1px);box-shadow:var(--md),0 0 0 3px var(--accent-l),0 0 16px var(--accent-m)}
 .btn-generate:active{transform:scale(.98)}
 .btn-generate:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:var(--xs)}
-.btn-arr{
-  width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.14);
-  display:flex;align-items:center;justify-content:center;font-size:12px;
-  transition:transform var(--dur) var(--spring);
-}
+.btn-arr{width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:12px;transition:transform var(--dur) var(--spring)}
 .btn-generate:hover .btn-arr{transform:translateX(2px)}
+
+.btn-action{
+  height:36px;padding:0 16px;border-radius:var(--r-md);
+  font-size:12px;font-weight:600;
+  background:var(--accent);color:#fff;
+  display:inline-flex;align-items:center;gap:6px;
+  cursor:pointer;transition:background var(--dur) var(--ease),transform var(--dur) var(--spring);
+}
+.btn-action:hover{background:var(--accent-d);transform:translateY(-2px)}
+.btn-action:active{transform:scale(.95)}
 
 /* ─── Error ─── */
 .err-box{
@@ -285,10 +290,8 @@ body{
 @keyframes errShake{0%,100%{transform:translateX(0)}18%{transform:translateX(-5px)}36%{transform:translateX(5px)}54%{transform:translateX(-3px)}72%{transform:translateX(3px)}}
 .err-box::before{content:'⚠';flex-shrink:0}
 
-/* ─── Right column states ─── */
 .right-col{display:flex;flex-direction:column;height:100%}
 
-/* Placeholder */
 .placeholder{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   flex:1;gap:10px;color:var(--t3);text-align:center;padding:32px;
@@ -303,105 +306,223 @@ body{
 .ph-title{font-size:13.5px;font-weight:600;color:var(--t2)}
 .ph-sub{font-size:12px;max-width:190px;line-height:1.6}
 
-/* Loading pane */
-.loading-pane{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  flex:1;gap:18px;padding:32px;
-  animation:fadeUp .3s var(--ease) both;
+/* ─── PROCESSING PAGE ─── */
+.page-processing{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:24px;
 }
-.orbital{width:52px;height:52px;position:relative;flex-shrink:0}
-.o-ring{position:absolute;border-radius:50%;border:2px solid transparent;inset:0}
+
+.processing-center{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:32px;text-align:center;
+  animation:fadeUp .4s var(--ease) both;
+}
+
+.orbital{width:64px;height:64px;position:relative;flex-shrink:0}
+.o-ring{position:absolute;border-radius:50%;border:2.5px solid transparent;inset:0}
 .o1{border-top-color:var(--accent);border-right-color:rgba(99,102,241,.25);animation:spin .9s linear infinite;box-shadow:0 0 10px rgba(99,102,241,.2)}
-.o2{inset:9px;border-bottom-color:var(--green);border-left-color:rgba(16,185,129,.25);animation:spin .65s linear infinite reverse;opacity:.7}
-.o3{inset:19px;border-top-color:var(--amber);animation:spin .5s linear infinite}
-.o-core{position:absolute;inset:26px;border-radius:50%;background:var(--accent);animation:corePulse .9s ease-in-out infinite;box-shadow:0 0 6px var(--accent)}
+.o2{inset:10px;border-bottom-color:var(--green);border-left-color:rgba(16,185,129,.25);animation:spin .65s linear infinite reverse;opacity:.7}
+.o3{inset:20px;border-top-color:var(--amber);animation:spin .5s linear infinite}
+.o-core{position:absolute;inset:30px;border-radius:50%;background:var(--accent);animation:corePulse .9s ease-in-out infinite;box-shadow:0 0 8px var(--accent)}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes corePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.55);opacity:.6}}
-.load-title{font-size:13.5px;font-weight:600;color:var(--t1)}
-.load-step{font-size:11.5px;color:var(--t3);text-align:center}
-.prog-track{width:150px;height:2px;background:var(--border);border-radius:999px;overflow:hidden}
-.prog-fill{height:100%;background:var(--accent);border-radius:999px;width:0%;transition:width .5s var(--ease);position:relative;overflow:hidden}
-.prog-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);background-size:200%;animation:shimmerSweep 1.3s ease-in-out infinite}
+
+.proc-info{
+  display:flex;flex-direction:column;gap:12px;
+}
+
+.proc-title{font-size:18px;font-weight:700;color:var(--t1)}
+.proc-step{font-size:13px;color:var(--t2);font-weight:500}
+
+.proc-track{width:200px;height:3px;background:var(--border);border-radius:999px;overflow:hidden;margin:0 auto}
+.proc-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:999px;width:0%;transition:width .5s var(--ease);position:relative;overflow:hidden}
+.proc-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);background-size:200%;animation:shimmerSweep 1.3s ease-in-out infinite}
 @keyframes shimmerSweep{0%{background-position:-200% 0}100%{background-position:200% 0}}
-.pipe-dots{display:flex;gap:5px}
-.pd{width:5px;height:5px;border-radius:50%;background:var(--border-md);transition:background .3s var(--ease),transform .3s var(--spring)}
+
+.proc-dots{display:flex;gap:8px;justify-content:center}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--border-md);transition:background .3s var(--ease),transform .3s var(--spring)}
 .pd.done{background:var(--green)}
-.pd.active{background:var(--accent);transform:scale(1.6)}
+.pd.active{background:var(--accent);transform:scale(1.4)}
 
-/* Results pane */
-.results-pane{
-  overflow-y:auto;max-height:540px;padding:2px;
-  display:flex;flex-direction:column;flex:1;
+/* ─── OUTPUT PAGE ─── */
+.page-output{max-width:1400px;margin:0 auto;padding:24px}
+
+.output-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border);
 }
-.rs-strip{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);padding:10px 0 14px;margin-bottom:18px;flex-wrap:wrap}
-.rs-item{display:flex;align-items:baseline;gap:4px;cursor:default}
-.rs-num{font-size:17px;font-weight:800;letter-spacing:-.04em;color:var(--t1);transition:transform var(--dur) var(--spring)}
-.rs-item:hover .rs-num{transform:scale(1.08)}
-.rs-lbl{font-size:10.5px;color:var(--t3);font-weight:500}
-.rs-div{width:1px;height:18px;background:var(--border)}
 
-/* Transcript panel (audio/video only) */
-.transcript-block{
-  background:var(--bg-s);border:1px solid var(--border);border-radius:var(--r-md);
-  padding:12px 14px;margin-bottom:16px;max-height:120px;overflow-y:auto;
-  font-size:12px;line-height:1.7;color:var(--t2);
+.output-title{font-size:22px;font-weight:700;color:var(--t1)}
+
+.output-actions{
+  display:flex;gap:10px;
 }
-.transcript-block-title{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
 
-/* Result blocks */
-.rb{margin-bottom:18px;animation:fadeUp .4s var(--ease) both}
-.rb:nth-child(1){animation-delay:.04s}.rb:nth-child(2){animation-delay:.1s}.rb:nth-child(3){animation-delay:.16s}.rb:nth-child(4){animation-delay:.22s}
-.rb-title{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:9px}
-.kw-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.output-layout{
+  display:grid;grid-template-columns:1fr 3fr;gap:24px;
+  animation:fadeUp .4s var(--ease) both;
+}
+
+/* Sidebar */
+.output-sidebar{
+  display:flex;flex-direction:column;gap:16px;
+}
+
+.sidebar-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px;
+  cursor:pointer;transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),transform var(--dur) var(--spring);
+}
+.sidebar-card:hover{border-color:var(--accent);background:var(--accent-l);transform:translateX(4px)}
+.sidebar-card.active{border-color:var(--accent);background:var(--accent-m);color:var(--t1)}
+.sidebar-label{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;display:block}
+.sidebar-content{font-size:13px;color:var(--t2)}
+.sidebar-stat{font-size:18px;font-weight:700;color:var(--accent);margin-top:6px}
+
+/* Main content */
+.output-main{
+  display:flex;flex-direction:column;gap:28px;
+}
+
+.output-section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:28px;
+  animation:fadeUp .4s var(--ease) both;
+}
+.output-section:nth-child(1){animation-delay:.05s}
+.output-section:nth-child(2){animation-delay:.1s}
+.output-section:nth-child(3){animation-delay:.15s}
+.output-section:nth-child(4){animation-delay:.2s}
+
+.section-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+
+.section-title{
+  font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:8px;
+}
+
+.section-title::before{
+  content:'';width:3px;height:14px;background:var(--accent);border-radius:999px;
+}
+
+.section-actions{display:flex;gap:8px}
+
+/* Summary */
+.summary-text{
+  display:flex;flex-direction:column;gap:12px;
+}
+
+.summary-para{
+  font-size:14px;line-height:1.8;color:var(--t2);
+  padding:14px 16px;background:var(--bg-s);border-left:3px solid var(--accent);
+  border-radius:var(--r);transition:background var(--dur) var(--ease),border-left-color var(--dur) var(--ease);
+}
+.summary-para:hover{background:var(--accent-l);border-left-color:var(--green)}
+
+/* Keywords */
+.kw-grid{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+
 .kw{
-  font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:999px;
-  border:1px solid var(--border-md);color:var(--t2);background:var(--bg-m);
-  cursor:default;transition:border-color var(--dur) var(--ease),color var(--dur) var(--ease),background var(--dur) var(--ease),transform var(--dur) var(--spring),box-shadow var(--dur) var(--ease);
+  font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;
+  border:1.5px solid var(--accent);color:var(--accent);background:var(--accent-l);
+  cursor:default;transition:all var(--dur) var(--spring);
   animation:kwPop .3s var(--spring) both;
 }
-@keyframes kwPop{from{opacity:0;transform:scale(.75)}to{opacity:1;transform:scale(1)}}
-.kw:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l);transform:translateY(-2px);box-shadow:var(--sm)}
-.sum-list{list-style:none;display:flex;flex-direction:column;gap:6px}
-.sum-item{
-  display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:var(--r-md);
-  font-size:12.5px;line-height:1.7;color:var(--t2);border:1px solid transparent;cursor:default;
-  transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease),color var(--dur) var(--ease),transform var(--dur) var(--ease);
-  animation:fadeUp .3s var(--ease) both;
+@keyframes kwPop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.kw:hover{
+  background:var(--accent);color:#fff;transform:translateY(-3px);
+  box-shadow:0 8px 16px rgba(99,102,241,.2);
 }
-.sum-item:hover{background:var(--bg-s);border-color:var(--border);color:var(--t1);transform:translateX(3px)}
-.sum-n{
-  flex-shrink:0;width:19px;height:19px;border-radius:5px;
-  background:var(--bg-m);border:1px solid var(--border);
-  font-size:9.5px;font-weight:700;color:var(--t3);
-  display:flex;align-items:center;justify-content:center;margin-top:1px;
-  transition:background var(--dur) var(--ease),color var(--dur) var(--ease);
-}
-.sum-item:hover .sum-n{background:var(--accent);color:#fff;border-color:var(--accent)}
-.hi{background:var(--accent-l);color:var(--accent);border-radius:3px;padding:0 2px;font-weight:500}
-.topic-block{margin-bottom:12px}
-.topic-head{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--t2);margin-bottom:7px;cursor:default;transition:color var(--dur) var(--ease)}
-.topic-head:hover{color:var(--accent)}
-.t-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;transition:transform var(--dur) var(--spring)}
-.topic-head:hover .t-dot{transform:scale(1.6)}
-.topic-sents{display:flex;flex-direction:column;gap:4px;padding-left:13px}
-.t-sent{font-size:12px;line-height:1.65;color:var(--t3);padding:6px 10px;border-left:2px solid var(--border);border-radius:0 var(--r) var(--r) 0;transition:border-left-color var(--dur) var(--ease),color var(--dur) var(--ease),background var(--dur) var(--ease)}
-.t-sent:hover{border-left-color:var(--accent);color:var(--t2);background:var(--accent-l)}
 
-/* Frame bar (macOS style) */
-.frame-bar{height:38px;background:var(--bg-s);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:6px;flex-shrink:0}
-.fd{width:11px;height:11px;border-radius:50%}
-.fd-r{background:#ff5f57}.fd-y{background:#febc2e}.fd-g{background:#28c840}
-.frame-mid{flex:1;text-align:center;font-size:11px;color:var(--t3);letter-spacing:.02em}
-.frame-url{font-size:10.5px;color:var(--t3);background:var(--bg-m);border:1px solid var(--border);border-radius:var(--r);padding:2px 9px}
+/* Topics */
+.topic-accordion{
+  display:flex;flex-direction:column;gap:12px;
+}
+
+.topic-item{
+  border:1px solid var(--border);border-radius:var(--r-lg);
+  overflow:hidden;transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease);
+}
+
+.topic-item.open{border-color:var(--accent);background:var(--accent-l)}
+
+.topic-header{
+  padding:16px;background:var(--bg-s);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background var(--dur) var(--ease);
+}
+
+.topic-item.open .topic-header{background:var(--accent-m)}
+
+.topic-title{
+  font-size:14px;font-weight:700;color:var(--t1);
+  display:flex;align-items:center;gap:10px;
+}
+
+.topic-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  transition:transform var(--dur) var(--spring);
+}
+
+.topic-item.open .topic-dot{transform:scale(1.4)}
+
+.topic-toggle{
+  width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  color:var(--t2);transition:transform var(--dur) var(--spring);
+  font-size:14px;
+}
+
+.topic-item.open .topic-toggle{transform:rotate(180deg);color:var(--accent)}
+
+.topic-body{
+  max-height:0;overflow:hidden;transition:max-height .3s var(--ease);
+}
+
+.topic-item.open .topic-body{max-height:600px}
+
+.topic-sents{
+  display:flex;flex-direction:column;gap:8px;
+  padding:16px;
+}
+
+.t-sent{
+  font-size:13px;line-height:1.7;color:var(--t2);
+  padding:12px 14px;background:var(--surface);
+  border-left:3px solid var(--accent);border-radius:var(--r);
+  transition:all var(--dur) var(--ease);
+}
+.t-sent:hover{background:var(--accent-l);color:var(--t1);border-left-color:var(--green)}
+
+/* Transcript */
+.transcript-box{
+  background:var(--bg-s);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px;
+  max-height:300px;overflow-y:auto;
+  font-size:13px;line-height:1.8;color:var(--t2);
+}
 
 .hidden{display:none!important}
 
 /* ─── Responsive ─── */
-@media(max-width:680px){
-  .app-body{grid-template-columns:1fr;min-height:auto}
-  .col-left{border-right:none;border-bottom:1px solid var(--border)}
-  .mode-tabs{flex-wrap:wrap}
+@media(max-width:1024px){
+  .output-layout{grid-template-columns:1fr;gap:16px}
+  .output-sidebar{flex-direction:row;overflow-x:auto}
+  .sidebar-card{flex-shrink:0;min-width:200px}
+}
+
+@media(max-width:768px){
+  .navbar-inner{height:50px;padding:0 16px}
+  .input-body{grid-template-columns:1fr;min-height:auto}
+  .input-col-left{border-right:none;border-bottom:1px solid var(--border)}
   .hero h1{font-size:2rem}
+  .page-input{padding:0 16px 80px}
+  .page-output{padding:16px}
+  .output-header{flex-direction:column;align-items:flex-start;gap:12px}
 }
 </style>
 </head>
@@ -410,17 +531,21 @@ body{
 <!-- NAVBAR -->
 <header class="navbar">
   <div class="navbar-inner">
-    <div class="logo">
-      <div class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
+    <div class="navbar-left">
+      <div class="nav-back" id="navBack">
+        <span>← Back</span>
       </div>
-      NoteFlow
-      <span class="logo-badge">Multimodal</span>
+      <div class="logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        NoteFlow
+      </div>
     </div>
     <div class="nav-right">
       <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
@@ -430,227 +555,259 @@ body{
   </div>
 </header>
 
-<div class="page">
+<!-- PAGE: INPUT -->
+<div class="page active" id="pageInput">
+  <div class="page-input">
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Text · Audio · Video — all in one pipeline
+      </div>
+      <h1>Lectures into notes,<br/><em>any format</em></h1>
+      <p>Paste text, upload a recording, or drop a video file. NoteFlow transcribes and structures your lecture notes using Whisper + TF-IDF + KMeans.</p>
+    </section>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    Text · Audio · Video — all in one pipeline
-  </div>
-  <h1>Lectures into notes,<br/><em>any format</em></h1>
-  <p>Paste text, upload a recording, or drop a video file. NoteFlow transcribes and structures your lecture notes using Whisper + TF-IDF + KMeans.</p>
-</section>
+    <div class="mode-tabs" role="tablist">
+      <div class="tab active" data-tab="text" role="tab" aria-selected="true">
+        <span class="tab-icon">📝</span> Text
+      </div>
+      <div class="tab" data-tab="audio" role="tab" aria-selected="false">
+        <span class="tab-icon">🎙️</span> Audio
+      </div>
+      <div class="tab" data-tab="video" role="tab" aria-selected="false">
+        <span class="tab-icon">🎬</span> Video
+      </div>
+    </div>
 
-<!-- MODE TABS -->
-<div class="mode-tabs" role="tablist">
-  <div class="tab active" data-tab="text" role="tab" aria-selected="true">
-    <span class="tab-icon">📝</span> Text
-  </div>
-  <div class="tab" data-tab="audio" role="tab" aria-selected="false">
-    <span class="tab-icon">🎙️</span> Audio
-  </div>
-  <div class="tab" data-tab="video" role="tab" aria-selected="false">
-    <span class="tab-icon">🎬</span> Video
+    <div class="card">
+      <div class="input-body">
+        <div class="input-col input-col-left">
+          <!-- TEXT PANEL -->
+          <div class="tab-panel active" id="panel-text">
+            <div class="col-label">Lecture text</div>
+            <textarea class="app-ta" id="taText"
+              placeholder="Paste lecture content here…&#10;&#10;e.g. Machine learning is a branch of artificial intelligence that builds systems which learn from data to improve performance without explicit programming…"
+              spellcheck="false" aria-label="Lecture text"></textarea>
+            <div class="ta-meta">
+              <span class="ta-count" id="wcText">0 words</span>
+              <span class="ta-hint">5+ sentences recommended</span>
+            </div>
+
+            <div class="or-row"><div class="or-line"></div><span class="or-txt">or upload .txt</span><div class="or-line"></div></div>
+
+            <div class="drop-zone" id="txtDrop">
+              <input type="file" id="txtFile" accept=".txt"/>
+              <span class="dz-icon">📄</span>
+              <p class="dz-title">Drop a file or <strong id="txtBrowse">browse</strong></p>
+              <p class="dz-sub" id="txtLabel">Supports .txt files</p>
+            </div>
+          </div>
+
+          <!-- AUDIO PANEL -->
+          <div class="tab-panel" id="panel-audio">
+            <div class="col-label">Audio source</div>
+
+            <div class="model-row">
+              <label for="audioModel">Whisper model</label>
+              <select class="model-select" id="audioModel">
+                <option value="tiny">tiny — fastest</option>
+                <option value="base" selected>base — recommended ✓</option>
+                <option value="small">small — better</option>
+                <option value="medium">medium — GPU</option>
+                <option value="large">large — best</option>
+              </select>
+              <span class="model-hint">local</span>
+            </div>
+
+            <div class="recorder">
+              <div class="col-label">Record live</div>
+              <div class="rec-row">
+                <button class="btn-rec" id="recBtn">
+                  <span class="rec-dot"></span>
+                  <span id="recTxt">Start recording</span>
+                </button>
+                <span class="rec-timer hidden" id="recTimer">00:00</span>
+              </div>
+              <div class="rec-preview hidden" id="recPreview">
+                <audio id="recAudio" controls></audio>
+              </div>
+            </div>
+
+            <div class="or-row"><div class="or-line"></div><span class="or-txt">or upload file</span><div class="or-line"></div></div>
+
+            <div class="drop-zone" id="audioDrop">
+              <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg,.flac,.webm"/>
+              <span class="dz-icon">🎙️</span>
+              <p class="dz-title">Drop audio or <strong id="audioBrowse">browse</strong></p>
+              <p class="dz-sub" id="audioLabel">Supports .mp3 .wav .m4a .ogg .flac</p>
+              <div class="dz-formats">
+                <span class="fmt-tag">mp3</span><span class="fmt-tag">wav</span>
+                <span class="fmt-tag">m4a</span><span class="fmt-tag">ogg</span>
+                <span class="fmt-tag">flac</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIDEO PANEL -->
+          <div class="tab-panel" id="panel-video">
+            <div class="col-label">Video source</div>
+
+            <div class="model-row">
+              <label for="videoModel">Whisper model</label>
+              <select class="model-select" id="videoModel">
+                <option value="tiny">tiny — fastest</option>
+                <option value="base" selected>base — recommended ✓</option>
+                <option value="small">small — better</option>
+                <option value="medium">medium — GPU</option>
+                <option value="large">large — best</option>
+              </select>
+              <span class="model-hint">ffmpeg</span>
+            </div>
+
+            <div class="drop-zone" id="videoDrop">
+              <input type="file" id="videoFile" accept=".mp4,.mov,.avi,.mkv,.webm"/>
+              <span class="dz-icon">🎬</span>
+              <p class="dz-title">Drop video or <strong id="videoBrowse">browse</strong></p>
+              <p class="dz-sub" id="videoLabel">Supports .mp4 .mov .avi .mkv .webm</p>
+              <div class="dz-formats">
+                <span class="fmt-tag">mp4</span><span class="fmt-tag">mov</span>
+                <span class="fmt-tag">avi</span><span class="fmt-tag">mkv</span>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;padding:10px 12px;background:var(--amber-l);border:1px solid rgba(245,158,11,.2);border-radius:var(--r);font-size:12px;color:var(--t2)">
+              ℹ️ Large files may take 1–3 minutes
+            </div>
+          </div>
+
+          <button class="btn-generate" id="genBtn">
+            <div class="btn-shimmer"></div>
+            <span id="genTxt">Generate Notes</span>
+            <div class="btn-arr" id="genArr">→</div>
+          </button>
+
+          <div id="errBox" class="err-box hidden"></div>
+        </div>
+
+        <!-- RIGHT: Preview -->
+        <div class="input-col right-col" id="rightCol">
+          <div class="placeholder" id="phState">
+            <div class="ph-icon" id="phIcon">✨</div>
+            <p class="ph-title">Your notes will appear here</p>
+            <p class="ph-sub" id="phSub">Choose a mode and click Generate Notes</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- APP CARD -->
-<div class="card">
-  <div class="frame-bar">
-    <div class="fd fd-r"></div><div class="fd fd-y"></div><div class="fd fd-g"></div>
-    <div class="frame-mid" id="frameTitle">NoteFlow — Text Input</div>
-    <div class="frame-url">localhost:5000</div>
+<!-- PAGE: PROCESSING -->
+<div class="page" id="pageProcessing">
+  <div class="processing-center">
+    <div class="orbital">
+      <div class="o-ring o1"></div>
+      <div class="o-ring o2"></div>
+      <div class="o-ring o3"></div>
+      <div class="o-core"></div>
+    </div>
+
+    <div class="proc-info">
+      <div class="proc-title" id="procTitle">Processing your content…</div>
+      <div class="proc-step" id="procStep">Initializing pipeline</div>
+    </div>
+
+    <div class="proc-track">
+      <div class="proc-fill" id="procFill"></div>
+    </div>
+
+    <div class="proc-dots" id="procDots">
+      <div class="pd" id="ppd1"></div>
+      <div class="pd" id="ppd2"></div>
+      <div class="pd" id="ppd3"></div>
+      <div class="pd" id="ppd4"></div>
+      <div class="pd" id="ppd5"></div>
+    </div>
   </div>
+</div>
 
-  <div class="app-body">
-
-    <!-- LEFT: Inputs -->
-    <div class="col col-left">
-
-      <!-- ── TEXT PANEL ── -->
-      <div class="tab-panel active" id="panel-text">
-        <div class="col-label">Lecture text</div>
-        <textarea class="app-ta" id="taText"
-          placeholder="Paste lecture content here…&#10;&#10;e.g. Machine learning is a branch of artificial intelligence that builds systems which learn from data to improve performance without explicit programming…"
-          spellcheck="false" aria-label="Lecture text"></textarea>
-        <div class="ta-meta">
-          <span class="ta-count" id="wcText">0 words</span>
-          <span class="ta-hint">5+ sentences recommended</span>
-        </div>
-
-        <div class="or-row"><div class="or-line"></div><span class="or-txt">or upload .txt</span><div class="or-line"></div></div>
-
-        <div class="drop-zone" id="txtDrop">
-          <input type="file" id="txtFile" accept=".txt"/>
-          <span class="dz-icon">📄</span>
-          <p class="dz-title">Drop a file or <strong id="txtBrowse">browse</strong></p>
-          <p class="dz-sub" id="txtLabel">Supports .txt files</p>
-        </div>
-      </div>
-
-      <!-- ── AUDIO PANEL ── -->
-      <div class="tab-panel" id="panel-audio">
-        <div class="col-label">Audio source</div>
-
-        <!-- Model selector -->
-        <div class="model-row">
-          <label for="audioModel">Whisper model</label>
-          <select class="model-select" id="audioModel">
-            <option value="tiny">tiny — fastest (test use)</option>
-            <option value="base" selected>base — recommended ✓</option>
-            <option value="small">small — better accuracy</option>
-            <option value="medium">medium — high accuracy (GPU)</option>
-            <option value="large">large — best (GPU required)</option>
-          </select>
-          <span class="model-hint">runs locally</span>
-        </div>
-
-        <!-- Live recorder -->
-        <div class="recorder">
-          <div class="col-label">Record live</div>
-          <div class="rec-row">
-            <button class="btn-rec" id="recBtn">
-              <span class="rec-dot"></span>
-              <span id="recTxt">Start recording</span>
-            </button>
-            <span class="rec-timer hidden" id="recTimer">00:00</span>
-          </div>
-          <div class="rec-preview hidden" id="recPreview">
-            <audio id="recAudio" controls></audio>
-          </div>
-        </div>
-
-        <div class="or-row"><div class="or-line"></div><span class="or-txt">or upload file</span><div class="or-line"></div></div>
-
-        <div class="drop-zone" id="audioDrop">
-          <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg,.flac,.webm"/>
-          <span class="dz-icon">🎙️</span>
-          <p class="dz-title">Drop audio or <strong id="audioBrowse">browse</strong></p>
-          <p class="dz-sub" id="audioLabel">Supports .mp3 .wav .m4a .ogg .flac</p>
-          <div class="dz-formats">
-            <span class="fmt-tag">mp3</span><span class="fmt-tag">wav</span>
-            <span class="fmt-tag">m4a</span><span class="fmt-tag">ogg</span>
-            <span class="fmt-tag">flac</span><span class="fmt-tag">webm</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── VIDEO PANEL ── -->
-      <div class="tab-panel" id="panel-video">
-        <div class="col-label">Video source</div>
-
-        <div class="model-row">
-          <label for="videoModel">Whisper model</label>
-          <select class="model-select" id="videoModel">
-            <option value="tiny">tiny — fastest (test use)</option>
-            <option value="base" selected>base — recommended ✓</option>
-            <option value="small">small — better accuracy</option>
-            <option value="medium">medium — high accuracy (GPU)</option>
-            <option value="large">large — best (GPU required)</option>
-          </select>
-          <span class="model-hint">audio extracted with ffmpeg</span>
-        </div>
-
-        <div class="drop-zone" id="videoDrop">
-          <input type="file" id="videoFile" accept=".mp4,.mov,.avi,.mkv,.webm"/>
-          <span class="dz-icon">🎬</span>
-          <p class="dz-title">Drop video or <strong id="videoBrowse">browse</strong></p>
-          <p class="dz-sub" id="videoLabel">Supports .mp4 .mov .avi .mkv .webm</p>
-          <div class="dz-formats">
-            <span class="fmt-tag">mp4</span><span class="fmt-tag">mov</span>
-            <span class="fmt-tag">avi</span><span class="fmt-tag">mkv</span><span class="fmt-tag">webm</span>
-          </div>
-        </div>
-
-        <div style="margin-top:12px;padding:10px 12px;background:var(--amber-l);border:1px solid rgba(245,158,11,.2);border-radius:var(--r);font-size:12px;color:var(--t2)">
-          ℹ️ Video processing extracts audio via <strong>ffmpeg</strong>, then transcribes with Whisper. Large files may take 1–3 minutes.
-        </div>
-      </div>
-
-      <!-- Generate button (shared) -->
-      <button class="btn-generate" id="genBtn">
-        <div class="btn-shimmer"></div>
-        <span id="genTxt">Generate Notes</span>
-        <div class="btn-arr" id="genArr">→</div>
+<!-- PAGE: OUTPUT -->
+<div class="page" id="pageOutput">
+  <div class="output-header">
+    <div class="output-title">Your Generated Notes</div>
+    <div class="output-actions">
+      <button class="btn-action" id="btnDownload" title="Download as PDF">
+        <span>⬇️</span> Download
       </button>
+      <button class="btn-action" id="btnCopy" title="Copy all content">
+        <span>📋</span> Copy
+      </button>
+    </div>
+  </div>
 
-      <div id="errBox" class="err-box hidden"></div>
+  <div class="output-layout">
+    <!-- Sidebar -->
+    <div class="output-sidebar">
+      <div class="sidebar-card active" data-section="summary">
+        <span class="sidebar-label">📄 Summary</span>
+        <span class="sidebar-content">Overview</span>
+      </div>
+      <div class="sidebar-card" data-section="keywords">
+        <span class="sidebar-label">🔑 Keywords</span>
+        <div class="sidebar-stat" id="kwCount">0</div>
+      </div>
+      <div class="sidebar-card" data-section="topics">
+        <span class="sidebar-label">🧠 Topics</span>
+        <div class="sidebar-stat" id="toCount">0</div>
+      </div>
+      <div class="sidebar-card" data-section="transcript">
+        <span class="sidebar-label">🎙️ Transcript</span>
+        <span class="sidebar-content">Audio/Video</span>
+      </div>
     </div>
 
-    <!-- RIGHT: Output -->
-    <div class="col right-col" id="rightCol">
-
-      <!-- Placeholder -->
-      <div class="placeholder" id="phState">
-        <div class="ph-icon" id="phIcon">✨</div>
-        <p class="ph-title">Your notes will appear here</p>
-        <p class="ph-sub" id="phSub">Choose a mode and click Generate Notes</p>
+    <!-- Main Content -->
+    <div class="output-main">
+      <!-- Summary Section -->
+      <div class="output-section" id="secSummary">
+        <div class="section-header">
+          <div class="section-title">Summary</div>
+          <div class="section-actions">
+            <button class="btn-action" onclick="copySectionText('secSummary')">Copy</button>
+          </div>
+        </div>
+        <div class="summary-text" id="summaryContent"></div>
       </div>
 
-      <!-- Loading -->
-      <div class="loading-pane hidden" id="loadPane">
-        <div class="orbital">
-          <div class="o-ring o1"></div>
-          <div class="o-ring o2"></div>
-          <div class="o-ring o3"></div>
-          <div class="o-core"></div>
+      <!-- Keywords Section -->
+      <div class="output-section hidden" id="secKeywords">
+        <div class="section-header">
+          <div class="section-title">Key Terms</div>
         </div>
-        <div style="text-align:center">
-          <div class="load-title" id="loadTitle">Processing…</div>
-          <div class="load-step" id="loadStep">Initializing…</div>
-        </div>
-        <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
-        <div class="pipe-dots" id="pipeDots">
-          <div class="pd" id="pd1"></div>
-          <div class="pd" id="pd2"></div>
-          <div class="pd" id="pd3"></div>
-          <div class="pd" id="pd4"></div>
-          <div class="pd" id="pd5"></div>
-        </div>
+        <div class="kw-grid" id="keywordsContent"></div>
       </div>
 
-      <!-- Results -->
-      <div class="results-pane hidden" id="resPane">
-        <div class="col-label">Results</div>
-
-        <div class="rs-strip">
-          <div class="rs-item"><span class="rs-num" id="rW">—</span><span class="rs-lbl">words</span></div>
-          <div class="rs-div"></div>
-          <div class="rs-item"><span class="rs-num" id="rS">—</span><span class="rs-lbl">summary lines</span></div>
-          <div class="rs-div"></div>
-          <div class="rs-item"><span class="rs-num" id="rK">—</span><span class="rs-lbl">keywords</span></div>
-          <div class="rs-div"></div>
-          <div class="rs-item"><span class="rs-num" id="rT">—</span><span class="rs-lbl">topics</span></div>
+      <!-- Topics Section -->
+      <div class="output-section hidden" id="secTopics">
+        <div class="section-header">
+          <div class="section-title">Topic Clusters</div>
         </div>
-
-        <!-- Transcript (audio/video only) -->
-        <div class="rb hidden" id="transcriptBlock">
-          <div class="rb-title">Transcript</div>
-          <div class="transcript-block" id="transcriptText"></div>
-        </div>
-
-        <div class="rb" id="kwBlock">
-          <div class="rb-title">Keywords</div>
-          <div class="kw-wrap" id="kwWrap"></div>
-        </div>
-
-        <div class="rb" id="sumBlock">
-          <div class="rb-title">Summary</div>
-          <ul class="sum-list" id="sumList"></ul>
-        </div>
-
-        <div class="rb" id="topicBlock">
-          <div class="rb-title">Topic clusters</div>
-          <div id="topicWrap"></div>
-        </div>
+        <div class="topic-accordion" id="topicsContent"></div>
       </div>
 
+      <!-- Transcript Section -->
+      <div class="output-section hidden" id="secTranscript">
+        <div class="section-header">
+          <div class="section-title">Full Transcript</div>
+          <div class="section-actions">
+            <button class="btn-action" onclick="copySectionText('secTranscript')">Copy</button>
+          </div>
+        </div>
+        <div class="transcript-box" id="transcriptContent"></div>
+      </div>
     </div>
   </div>
 </div>
-
-</div><!-- /page -->
 
 <script>
 /* ═══════════════════════════════════════════════════
@@ -668,18 +825,24 @@ themeBtn.addEventListener('click', () => setTheme(html.dataset.theme === 'light'
 setTheme(localStorage.getItem('nf-theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
 
 /* ═══════════════════════════════════════════════════
-   TAB SWITCHING
+   PAGE NAVIGATION
 ═══════════════════════════════════════════════════ */
-const FRAME_TITLES = {
-  text:  'NoteFlow — Text Input',
-  audio: 'NoteFlow — Audio Transcription',
-  video: 'NoteFlow — Video Transcription',
-};
-const PH_SUBS = {
-  text:  'Paste text or upload a .txt file',
-  audio: 'Upload or record audio to begin',
-  video: 'Upload a lecture video to begin',
-};
+let currentPage = 'input';
+const navBack = document.getElementById('navBack');
+
+function goToPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pageInput' === page ? 'pageInput' : page === 'processing' ? 'pageProcessing' : 'pageOutput').classList.add('active');
+  currentPage = page;
+  navBack.style.display = page === 'input' ? 'none' : 'flex';
+  if (page === 'input') window.scrollTo(0, 0);
+}
+
+navBack.addEventListener('click', () => goToPage('input'));
+
+/* ═══════════════════════════════════════════════════
+   TAB SWITCHING (Input Page)
+═══════════════════════════════════════════════════ */
 let currentTab = 'text';
 
 document.querySelectorAll('.tab').forEach(tab => {
@@ -689,15 +852,11 @@ document.querySelectorAll('.tab').forEach(tab => {
     currentTab = mode;
     document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === mode));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${mode}`));
-    document.getElementById('frameTitle').textContent = FRAME_TITLES[mode];
-    document.getElementById('phSub').textContent     = PH_SUBS[mode];
-    showPane('placeholder');
-    hideErr();
   });
 });
 
 /* ═══════════════════════════════════════════════════
-   DROP ZONES — generic helper
+   DROP ZONES
 ═══════════════════════════════════════════════════ */
 function setupDropZone(zoneId, inputId, browseId, labelId, onFile) {
   const zone   = document.getElementById(zoneId);
@@ -707,7 +866,6 @@ function setupDropZone(zoneId, inputId, browseId, labelId, onFile) {
 
   browse.addEventListener('click', e => { e.stopPropagation(); input.click(); });
   zone.addEventListener('click', () => input.click());
-  zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') input.click(); });
   input.addEventListener('change', () => { if (input.files[0]) onFile(input.files[0], label, zone); });
 
   zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('over'); });
@@ -718,7 +876,6 @@ function setupDropZone(zoneId, inputId, browseId, labelId, onFile) {
   });
 }
 
-/* ── Text drop zone ── */
 let txtUploadedFile = null;
 const ta = document.getElementById('taText');
 const wcEl = document.getElementById('wcText');
@@ -731,46 +888,38 @@ ta.addEventListener('input', () => {
 });
 
 setupDropZone('txtDrop', 'txtFile', 'txtBrowse', 'txtLabel', (f, lbl, zone) => {
-  if (!f.name.endsWith('.txt')) { showErr('Only .txt files are supported in text mode.'); return; }
-  txtUploadedFile = f; lbl.textContent = '✓ ' + f.name;
-  zone.classList.add('has-file');
+  if (!f.name.endsWith('.txt')) { showErr('Only .txt files are supported.'); return; }
+  txtUploadedFile = f; lbl.textContent = '✓ ' + f.name; zone.classList.add('has-file');
   ta.value = ''; wcEl.textContent = '0 words'; wcEl.className = 'ta-count';
 });
 
-/* ── Audio drop zone ── */
 let audioFile = null;
 const AUDIO_EXTS = ['.mp3','.wav','.m4a','.ogg','.flac','.webm'];
 setupDropZone('audioDrop', 'audioFile', 'audioBrowse', 'audioLabel', (f, lbl, zone) => {
   const ext = '.' + f.name.split('.').pop().toLowerCase();
-  if (!AUDIO_EXTS.includes(ext)) { showErr('Unsupported audio format. Use: ' + AUDIO_EXTS.join(' ')); return; }
+  if (!AUDIO_EXTS.includes(ext)) { showErr('Unsupported audio format.'); return; }
   audioFile = f; lbl.textContent = '✓ ' + f.name; zone.classList.add('has-file');
-  recBlob = null; // clear any recording
+  recBlob = null;
   document.getElementById('recPreview').classList.add('hidden');
 });
 
-/* ── Video drop zone ── */
 let videoFile = null;
 const VIDEO_EXTS = ['.mp4','.mov','.avi','.mkv','.webm'];
 setupDropZone('videoDrop', 'videoFile', 'videoBrowse', 'videoLabel', (f, lbl, zone) => {
   const ext = '.' + f.name.split('.').pop().toLowerCase();
-  if (!VIDEO_EXTS.includes(ext)) { showErr('Unsupported video format. Use: ' + VIDEO_EXTS.join(' ')); return; }
+  if (!VIDEO_EXTS.includes(ext)) { showErr('Unsupported video format.'); return; }
   videoFile = f; lbl.textContent = '✓ ' + f.name; zone.classList.add('has-file');
 });
 
 /* ═══════════════════════════════════════════════════
-   LIVE AUDIO RECORDER
+   AUDIO RECORDER
 ═══════════════════════════════════════════════════ */
-let mediaRecorder = null;
-let recChunks     = [];
-let recBlob       = null;
-let recInterval   = null;
-let recSeconds    = 0;
-
-const recBtn     = document.getElementById('recBtn');
-const recTxt     = document.getElementById('recTxt');
-const recTimer   = document.getElementById('recTimer');
+let mediaRecorder = null, recChunks = [], recBlob = null, recInterval = null, recSeconds = 0;
+const recBtn = document.getElementById('recBtn');
+const recTxt = document.getElementById('recTxt');
+const recTimer = document.getElementById('recTimer');
 const recPreview = document.getElementById('recPreview');
-const recAudio   = document.getElementById('recAudio');
+const recAudio = document.getElementById('recAudio');
 
 function formatTime(s) {
   return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
@@ -778,7 +927,6 @@ function formatTime(s) {
 
 recBtn.addEventListener('click', async () => {
   if (mediaRecorder && mediaRecorder.state === 'recording') {
-    // Stop
     mediaRecorder.stop();
     clearInterval(recInterval);
     recBtn.classList.remove('recording');
@@ -786,8 +934,6 @@ recBtn.addEventListener('click', async () => {
     recTimer.classList.add('hidden');
     return;
   }
-
-  // Start
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     recChunks = []; recSeconds = 0;
@@ -797,7 +943,7 @@ recBtn.addEventListener('click', async () => {
       recBlob = new Blob(recChunks, { type: 'audio/webm' });
       recAudio.src = URL.createObjectURL(recBlob);
       recPreview.classList.remove('hidden');
-      audioFile = null; // clear file upload if recording used
+      audioFile = null;
       stream.getTracks().forEach(t => t.stop());
     };
     mediaRecorder.start();
@@ -807,7 +953,7 @@ recBtn.addEventListener('click', async () => {
     recTimer.textContent = '00:00';
     recInterval = setInterval(() => { recSeconds++; recTimer.textContent = formatTime(recSeconds); }, 1000);
   } catch (err) {
-    showErr('Microphone access denied. Please allow microphone access in your browser.');
+    showErr('Microphone access denied.');
   }
 });
 
@@ -820,248 +966,232 @@ const genArr = document.getElementById('genArr');
 
 genBtn.addEventListener('click', async () => {
   hideErr();
-
-  if (currentTab === 'text')  return handleText();
-  if (currentTab === 'audio') return handleAudio();
-  if (currentTab === 'video') return handleVideo();
+  if (currentTab === 'text') handleText();
+  else if (currentTab === 'audio') handleAudio();
+  else handleVideo();
 });
 
-/* ── Text handler ── */
 async function handleText() {
   const text = ta.value.trim();
-  if (!text && !txtUploadedFile) { showErr('Please enter lecture text or upload a .txt file.'); return; }
-
-  startSync();
+  if (!text && !txtUploadedFile) { showErr('Please enter text or upload a file.'); return; }
+  goToPage('processing');
+  startProcessing('Running NLP Pipeline');
   try {
     let data;
     if (txtUploadedFile) {
       const fd = new FormData(); fd.append('file', txtUploadedFile);
       data = await (await fetch('/upload', { method:'POST', body:fd })).json();
     } else {
-      data = await (await fetch('/summarize', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ text })
-      })).json();
+      data = await (await fetch('/summarize', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ text }) })).json();
     }
-    if (data.error) { showErr(data.error); return; }
-    render(data, false);
-  } catch { showErr('Cannot connect to Flask server. Is it running on port 5000?'); }
-  finally  { stopSync(); }
-}
-
-/* ── Audio handler ── */
-async function handleAudio() {
-  if (!audioFile && !recBlob) { showErr('Please upload an audio file or record audio first.'); return; }
-
-  const fd = new FormData();
-  if (recBlob) {
-    fd.append('file', recBlob, 'recording.webm');
-  } else {
-    fd.append('file', audioFile);
+    if (data.error) { showErr(data.error); goToPage('input'); return; }
+    renderOutput(data, false);
+    goToPage('output');
+  } catch {
+    showErr('Cannot connect to server.');
+    goToPage('input');
   }
-  // Optionally pass model (backend reads from a param or env; here we set env via UI)
-  await handleAsyncJob('/transcribe/audio', fd, 'Transcribing audio…');
 }
 
-/* ── Video handler ── */
-async function handleVideo() {
-  if (!videoFile) { showErr('Please upload a video file first.'); return; }
+async function handleAudio() {
+  if (!audioFile && !recBlob) { showErr('Please upload or record audio.'); return; }
+  goToPage('processing');
+  startProcessing('Transcribing Audio');
+  const fd = new FormData();
+  if (recBlob) fd.append('file', recBlob, 'recording.webm');
+  else fd.append('file', audioFile);
+  await handleAsyncJob('/transcribe/audio', fd);
+}
 
+async function handleVideo() {
+  if (!videoFile) { showErr('Please upload a video.'); return; }
+  goToPage('processing');
+  startProcessing('Processing Video');
   const fd = new FormData();
   fd.append('file', videoFile);
-  await handleAsyncJob('/transcribe/video', fd, 'Processing video…');
+  await handleAsyncJob('/transcribe/video', fd);
 }
 
-/* ─── Async job flow ─── */
-const AUDIO_STEPS = ['Uploading…', 'Transcribing speech…', 'Running NLP…', 'Extracting keywords…', 'Clustering topics…'];
-const AUDIO_PCTS  = [8, 35, 65, 80, 95];
+const STEPS = ['Uploading…', 'Transcribing…', 'Running NLP…', 'Extracting keywords…', 'Clustering…'];
+const PCTS  = [8, 35, 65, 80, 95];
 
-async function handleAsyncJob(endpoint, formData, initLabel) {
-  startAsync(initLabel);
+async function handleAsyncJob(endpoint, formData) {
   let jobId;
   try {
     const resp = await fetch(endpoint, { method:'POST', body:formData });
     const init = await resp.json();
-    if (!resp.ok || init.error) { showErr(init.error || 'Upload failed.'); return; }
+    if (!resp.ok || init.error) { showErr(init.error || 'Upload failed.'); goToPage('input'); return; }
     jobId = init.job_id;
-  } catch { showErr('Upload failed. Is Flask running?'); stopSync(); return; }
+  } catch { showErr('Upload failed.'); goToPage('input'); return; }
 
-  // Poll /status/<job_id> every 2 seconds
   let step = 0;
   const poll = setInterval(async () => {
     try {
       const s = await (await fetch(`/status/${jobId}`)).json();
-
-      // Advance step UI
-      step = Math.min(step + 1, AUDIO_STEPS.length - 1);
-      setStep(step, AUDIO_STEPS[step], AUDIO_PCTS[step]);
+      step = Math.min(step + 1, STEPS.length - 1);
+      setProcessingStep(step, STEPS[step], PCTS[step]);
 
       if (s.status === 'done') {
         clearInterval(poll);
-        stopSync();
-        render(s.result, true);
+        renderOutput(s.result, true);
+        goToPage('output');
       } else if (s.status === 'error') {
         clearInterval(poll);
-        stopSync();
-        showErr(s.error || 'Transcription failed.');
+        showErr(s.error || 'Failed.');
+        goToPage('input');
       }
-    } catch {
-      clearInterval(poll);
-      stopSync();
-      showErr('Lost connection to server.');
-    }
+    } catch { clearInterval(poll); }
   }, 2000);
 }
 
 /* ═══════════════════════════════════════════════════
-   LOADING STATES
+   PROCESSING STATE
 ═══════════════════════════════════════════════════ */
-const TEXT_STEPS = ['Tokenizing…', 'TF-IDF…', 'Scoring sentences…', 'Extracting keywords…', 'Clustering…'];
-const TEXT_PCTS  = [15, 35, 60, 80, 95];
+const procTitle = document.getElementById('procTitle');
+const procStep = document.getElementById('procStep');
+const procFill = document.getElementById('procFill');
+const pPdots = ['ppd1','ppd2','ppd3','ppd4','ppd5'].map(id => document.getElementById(id));
 
-let syncTimer = null;
-const loadTitle = document.getElementById('loadTitle');
-const loadStep  = document.getElementById('loadStep');
-const progFill  = document.getElementById('progFill');
-const pDots     = [1,2,3,4,5].map(n => document.getElementById('pd'+n));
-
-function startSync() {
-  showPane('loading');
-  genBtn.disabled = true; genTxt.textContent = 'Processing…'; genArr.textContent = '⏳';
-  pDots.forEach(d => d.classList.remove('active','done'));
-  progFill.style.width = '0%'; loadTitle.textContent = 'Running NLP Pipeline';
-  let cur = 0; setStep(0, TEXT_STEPS[0], TEXT_PCTS[0]);
-  syncTimer = setInterval(() => {
-    pDots[cur].classList.remove('active'); pDots[cur].classList.add('done'); cur++;
-    if (cur < pDots.length) setStep(cur, TEXT_STEPS[cur], TEXT_PCTS[cur]);
-    else { clearInterval(syncTimer); progFill.style.width='100%'; loadStep.textContent='Finalizing…'; }
-  }, 400);
+function startProcessing(title) {
+  procTitle.textContent = title;
+  procStep.textContent = STEPS[0];
+  procFill.style.width = '0%';
+  pPdots.forEach(d => d.classList.remove('active','done'));
+  setProcessingStep(0, STEPS[0], PCTS[0]);
 }
 
-function startAsync(label) {
-  startSync();
-  loadTitle.textContent = label;
-  clearInterval(syncTimer); // let poll drive steps
-}
-
-function setStep(i, label, pct) {
-  pDots.forEach((d, di) => { d.classList.remove('active'); if (di < i) d.classList.add('done'); });
-  if (i < pDots.length) pDots[i].classList.add('active');
-  loadStep.textContent = label;
-  progFill.style.width = pct + '%';
-}
-
-function stopSync() {
-  clearInterval(syncTimer);
-  genBtn.disabled = false; genTxt.textContent = 'Generate Notes'; genArr.textContent = '→';
-  pDots.forEach(d => d.classList.remove('active','done'));
-  progFill.style.width = '0%';
+function setProcessingStep(i, label, pct) {
+  pPdots.forEach((d, di) => { d.classList.remove('active'); if (di < i) d.classList.add('done'); });
+  if (i < pPdots.length) pPdots[i].classList.add('active');
+  procStep.textContent = label;
+  procFill.style.width = pct + '%';
 }
 
 /* ═══════════════════════════════════════════════════
-   PANE SWITCHING
+   OUTPUT PAGE
 ═══════════════════════════════════════════════════ */
-const ph   = document.getElementById('phState');
-const load = document.getElementById('loadPane');
-const res  = document.getElementById('resPane');
+function renderOutput(data, isAV) {
+  const { summary, keywords, topics, transcript } = data;
 
-function showPane(which) {
-  ph.classList.add('hidden'); load.classList.add('hidden'); res.classList.add('hidden');
-  if (which === 'placeholder') ph.classList.remove('hidden');
-  else if (which === 'loading') load.classList.remove('hidden');
-  else res.classList.remove('hidden');
-}
-
-/* ═══════════════════════════════════════════════════
-   RENDER RESULTS
-═══════════════════════════════════════════════════ */
-function render(data, isAV) {
-  const { summary, keywords, topics, word_count, transcript } = data;
-
-  // Stats
-  animCount('rW', word_count || 0);
-  animCount('rS', summary.length);
-  animCount('rK', keywords.length);
-  animCount('rT', topics.length);
-
-  // Transcript (audio/video only)
-  const tb = document.getElementById('transcriptBlock');
-  const tt = document.getElementById('transcriptText');
-  if (isAV && transcript) {
-    tt.textContent = transcript;
-    tb.classList.remove('hidden');
+  // Summary
+  const summaryContent = document.getElementById('summaryContent');
+  summaryContent.innerHTML = '';
+  if (Array.isArray(summary)) {
+    summary.forEach(txt => {
+      const p = document.createElement('div');
+      p.className = 'summary-para';
+      p.innerHTML = hl(txt, keywords);
+      summaryContent.appendChild(p);
+    });
   } else {
-    tb.classList.add('hidden');
+    const p = document.createElement('div');
+    p.className = 'summary-para';
+    p.innerHTML = hl(summary, keywords);
+    summaryContent.appendChild(p);
   }
 
   // Keywords
-  const kw = document.getElementById('kwWrap'); kw.innerHTML = '';
+  const keywordsContent = document.getElementById('keywordsContent');
+  keywordsContent.innerHTML = '';
+  document.getElementById('kwCount').textContent = keywords.length;
   keywords.forEach((w, i) => {
-    const s = document.createElement('span');
-    s.className = 'kw'; s.textContent = w;
-    s.style.animationDelay = (i * 0.04) + 's';
-    kw.appendChild(s);
-  });
-
-  // Summary
-  const sl = document.getElementById('sumList'); sl.innerHTML = '';
-  summary.forEach((txt, i) => {
-    const li = document.createElement('li'); li.className = 'sum-item';
-    li.style.animationDelay = (i * 0.055) + 's';
-    const n = document.createElement('span'); n.className = 'sum-n'; n.textContent = i + 1;
-    const t = document.createElement('span'); t.innerHTML = hl(txt, keywords);
-    li.appendChild(n); li.appendChild(t); sl.appendChild(li);
+    const span = document.createElement('span');
+    span.className = 'kw';
+    span.textContent = w;
+    span.style.animationDelay = (i * 0.04) + 's';
+    keywordsContent.appendChild(span);
   });
 
   // Topics
-  const tw = document.getElementById('topicWrap'); tw.innerHTML = '';
-  topics.forEach(t => {
-    const blk = document.createElement('div'); blk.className = 'topic-block';
-    const h = document.createElement('div'); h.className = 'topic-head';
-    const dot = document.createElement('span'); dot.className = 't-dot';
-    h.appendChild(dot); h.appendChild(document.createTextNode(t.topic)); blk.appendChild(h);
-    const ss = document.createElement('div'); ss.className = 'topic-sents';
-    t.sentences.forEach(s => {
-      const d = document.createElement('div'); d.className = 't-sent';
-      d.innerHTML = hl(s, keywords); ss.appendChild(d);
+  const topicsContent = document.getElementById('topicsContent');
+  topicsContent.innerHTML = '';
+  document.getElementById('toCount').textContent = topics.length;
+  topics.forEach((t, tidx) => {
+    const item = document.createElement('div');
+    item.className = 'topic-item';
+    item.innerHTML = `
+      <div class="topic-header">
+        <div class="topic-title">
+          <span class="topic-dot"></span>
+          ${t.topic}
+        </div>
+        <div class="topic-toggle">⌄</div>
+      </div>
+      <div class="topic-body">
+        <div class="topic-sents">
+          ${t.sentences.map(s => `<div class="t-sent">${hl(s, keywords)}</div>`).join('')}
+        </div>
+      </div>
+    `;
+    item.querySelector('.topic-header').addEventListener('click', () => {
+      item.classList.toggle('open');
     });
-    blk.appendChild(ss); tw.appendChild(blk);
+    topicsContent.appendChild(item);
   });
 
-  showPane('results');
+  // Transcript
+  const transcriptSection = document.getElementById('secTranscript');
+  if (isAV && transcript) {
+    document.getElementById('transcriptContent').textContent = transcript;
+    transcriptSection.classList.remove('hidden');
+  } else {
+    transcriptSection.classList.add('hidden');
+  }
+
+  // Show sections
+  document.getElementById('secSummary').classList.remove('hidden');
+  document.getElementById('secKeywords').classList.remove('hidden');
+  document.getElementById('secTopics').classList.remove('hidden');
 }
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR NAVIGATION
+═══════════════════════════════════════════════════ */
+document.querySelectorAll('.sidebar-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const section = card.dataset.section;
+    document.querySelectorAll('.sidebar-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    document.querySelectorAll('.output-section').forEach(s => s.classList.add('hidden'));
+    if (section === 'summary') document.getElementById('secSummary').classList.remove('hidden');
+    else if (section === 'keywords') document.getElementById('secKeywords').classList.remove('hidden');
+    else if (section === 'topics') document.getElementById('secTopics').classList.remove('hidden');
+    else if (section === 'transcript') document.getElementById('secTranscript').classList.remove('hidden');
+  });
+});
 
 /* ═══════════════════════════════════════════════════
    UTILITIES
 ═══════════════════════════════════════════════════ */
-function animCount(id, target) {
-  const el = document.getElementById(id);
-  const t0 = performance.now(), dur = 650;
-  (function tick(now) {
-    const p = Math.min((now - t0) / dur, 1);
-    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
-    if (p < 1) requestAnimationFrame(tick);
-  })(t0);
-}
-
 function hl(text, kws) {
   let r = escH(text);
   [...kws].sort((a,b)=>b.length-a.length).forEach(k=>{
-    r = r.replace(new RegExp('\\b('+escR(k)+')\\b','gi'),'<span class="hi">$1</span>');
+    r = r.replace(new RegExp('\\b('+escR(k)+')\\b','gi'),'<span style="background:var(--accent-l);color:var(--accent);font-weight:600">$1</span>');
   });
   return r;
 }
 function escH(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function escR(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 
+function copySectionText(sectionId) {
+  const section = document.getElementById(sectionId);
+  const text = section.innerText;
+  navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
+}
+
 const errBox = document.getElementById('errBox');
 function showErr(m) {
-  errBox.textContent = m; errBox.classList.remove('hidden');
+  errBox.textContent = m;
+  errBox.classList.remove('hidden');
   errBox.style.animation = 'none';
   requestAnimationFrame(() => { errBox.style.animation = 'errShake .38s var(--ease)'; });
-  showPane('placeholder');
 }
 function hideErr() { errBox.classList.add('hidden'); }
+
+// Download button (placeholder)
+document.getElementById('btnDownload').addEventListener('click', () => alert('PDF download coming soon!'));
+document.getElementById('btnCopy').addEventListener('click', () => alert('Copy all content coming soon!'));
 </script>
 </body>
 </html>
