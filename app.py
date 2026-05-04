@@ -65,7 +65,7 @@ def _save_upload(file_storage) -> str:
 
 def _process(raw_text: str):
     """
-    Core NLP pipeline — identical to the original app.
+    Core NLP pipeline — Enhanced with improved keyword extraction and summary quality.
     Accepts raw transcript/text; returns dict ready for jsonify().
     """
     sentences, cleaned = preprocess_text(raw_text)
@@ -73,7 +73,7 @@ def _process(raw_text: str):
         return {"error": "Transcript too short. Please provide longer content."}, 400
 
     keywords   = extract_keywords(cleaned, top_n=12)
-    summary    = generate_summary(sentences, cleaned, top_n=6)
+    summary    = generate_summary(sentences, cleaned, top_n=6, keywords=keywords)
     topics     = cluster_sentences(sentences, cleaned, n_clusters=3)
     word_count = len(raw_text.split())
 
